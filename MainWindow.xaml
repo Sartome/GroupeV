@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:GroupeV"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     mc:Ignorable="d"
     Title="** TERMINAL VENDEUR v2.0 **" 
     Height="800" Width="1400"
@@ -271,6 +272,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="320"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="420"/>
             </Grid.ColumnDefinitions>
 
             <!-- LEFT: NAVIGATION avec animations -->
@@ -323,11 +325,6 @@
                                 Click="EditProductButton_Click" 
                                 Style="{StaticResource HackerButtonStyle}"/>
 
-                        <Button x:Name="RefreshButton" 
-                                Content="  ACTUALISER DONNEES" 
-                                Click="RefreshButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"/>
-
                         <Button x:Name="ExportButton" 
                                 Content="  EXPORTER DONNEES" 
                                 Click="ExportButton_Click" 
@@ -377,8 +374,8 @@
                 </ScrollViewer>
             </Border>
 
-            <!-- RIGHT: DATA GRID avec animations -->
-            <Border Grid.Column="1" Style="{StaticResource HackerPanelStyle}" x:Name="DataGridPanel">
+            <!-- CENTER: DATA GRID avec animations -->
+            <Border Grid.Column="1" Style="{StaticResource HackerPanelStyle}" x:Name="DataGridPanel" Margin="0,0,10,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -451,6 +448,163 @@
                     </Border>
                 </Grid>
             </Border>
+
+            <!-- RIGHT: GRAPHIQUES ET ANALYTICS -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Graphique Camembert Categories -->
+                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="[REPARTITION CATEGORIES]" 
+                                           FontFamily="Consolas" 
+                                           FontSize="12" 
+                                           FontWeight="Bold" 
+                                           Foreground="LimeGreen"/>
+                                <TextBlock Text=" 📊" FontSize="14" Margin="5,0,0,0"/>
+                            </StackPanel>
+                            <lvc:PieChart x:Name="CategoriesPieChart" 
+                                          Height="200" 
+                                          Background="Black"
+                                          LegendPosition="Right"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Graphique Barres Vendeurs -->
+                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="[PRODUITS PAR VENDEUR]" 
+                                           FontFamily="Consolas" 
+                                           FontSize="12" 
+                                           FontWeight="Bold" 
+                                           Foreground="LimeGreen"/>
+                                <TextBlock Text=" 📈" FontSize="14" Margin="5,0,0,0"/>
+                            </StackPanel>
+                            <lvc:CartesianChart x:Name="VendeursBarChart" 
+                                                Height="220" 
+                                                Background="Black"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Prix Moyens par Categorie -->
+                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="[PRIX MOYENS]" 
+                                           FontFamily="Consolas" 
+                                           FontSize="12" 
+                                           FontWeight="Bold" 
+                                           Foreground="LimeGreen"/>
+                                <TextBlock Text=" 💰" FontSize="14" Margin="5,0,0,0"/>
+                            </StackPanel>
+                            <lvc:CartesianChart x:Name="PrixMoyensChart" 
+                                                Height="200" 
+                                                Background="Black"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Mini Stats Cards -->
+                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="[ANALYTICS AVANCÉS]" 
+                                           FontFamily="Consolas" 
+                                           FontSize="12" 
+                                           FontWeight="Bold" 
+                                           Foreground="LimeGreen"/>
+                                <TextBlock Text=" 🔥" FontSize="14" Margin="5,0,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Produit le plus cher -->
+                            <Border Background="#0A0A0A" BorderBrush="#FFD700" BorderThickness="2" 
+                                    Padding="10" Margin="0,0,0,8" CornerRadius="3">
+                                <StackPanel>
+                                    <TextBlock Text="💎 PRODUIT LE PLUS CHER" 
+                                               FontFamily="Consolas" 
+                                               FontSize="10" 
+                                               Foreground="#FFD700"/>
+                                    <TextBlock x:Name="MostExpensiveProductTextBlock" 
+                                               Text="--" 
+                                               FontFamily="Consolas" 
+                                               FontSize="14" 
+                                               FontWeight="Bold" 
+                                               Foreground="White"
+                                               TextWrapping="Wrap"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="MostExpensivePriceTextBlock" 
+                                               Text="0.00€" 
+                                               FontFamily="Consolas" 
+                                               FontSize="12" 
+                                               Foreground="#FFD700"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Produit le moins cher -->
+                            <Border Background="#0A0A0A" BorderBrush="#00BFFF" BorderThickness="2" 
+                                    Padding="10" Margin="0,0,0,8" CornerRadius="3">
+                                <StackPanel>
+                                    <TextBlock Text="🎯 PRODUIT LE MOINS CHER" 
+                                               FontFamily="Consolas" 
+                                               FontSize="10" 
+                                               Foreground="#00BFFF"/>
+                                    <TextBlock x:Name="LeastExpensiveProductTextBlock" 
+                                               Text="--" 
+                                               FontFamily="Consolas" 
+                                               FontSize="14" 
+                                               FontWeight="Bold" 
+                                               Foreground="White"
+                                               TextWrapping="Wrap"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="LeastExpensivePriceTextBlock" 
+                                               Text="0.00€" 
+                                               FontFamily="Consolas" 
+                                               FontSize="12" 
+                                               Foreground="#00BFFF"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Prix moyen global -->
+                            <Border Background="#0A0A0A" BorderBrush="LimeGreen" BorderThickness="2" 
+                                    Padding="10" CornerRadius="3">
+                                <StackPanel>
+                                    <TextBlock Text="📊 PRIX MOYEN GLOBAL" 
+                                               FontFamily="Consolas" 
+                                               FontSize="10" 
+                                               Foreground="LimeGreen"/>
+                                    <TextBlock x:Name="AveragePriceTextBlock" 
+                                               Text="0.00€" 
+                                               FontFamily="Consolas" 
+                                               FontSize="18" 
+                                               FontWeight="Bold" 
+                                               Foreground="LimeGreen">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Heatmap Activité -->
+                    <Border Style="{StaticResource HackerPanelStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="[ACTIVITÉ RÉCENTE]" 
+                                           FontFamily="Consolas" 
+                                           FontSize="12" 
+                                           FontWeight="Bold" 
+                                           Foreground="LimeGreen"/>
+                                <TextBlock Text=" ⚡" FontSize="14" Margin="5,0,0,0"/>
+                            </StackPanel>
+                            <StackPanel x:Name="ActivityHeatmapPanel">
+                                <!-- Sera rempli dynamiquement -->
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
 
         <!-- FOOTER avec animations -->

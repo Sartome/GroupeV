@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using GroupeV.Utilities;
 using System.Windows.Media.Animation;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
 namespace GroupeV
 {
@@ -233,6 +237,9 @@ namespace GroupeV
                 RecordCountTextBlock.Text = $"[ENREGISTREMENTS] {totalProducts} produits charges";
                 StatusTextBlock.Text = "[STATUT] [OK] Systeme pret - Toutes les donnees chargees avec succes";
                 QuickStatsTextBlock.Text = $"Base de donnees: vente_groupe\nStatut: [OK] CONNECTE\nServeur: localhost:3306\n\nProduits: {totalProducts}\nVendeurs: {totalSellers}\nCategories: {totalCategories}";
+
+                // Charger les graphiques et analytics
+                await LoadChartsAndAnalyticsAsync();
             }
             catch (Exception ex)
             {
@@ -327,13 +334,6 @@ namespace GroupeV
             }
         }
 
-        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            StatusTextBlock.Text = "[STATUT] Actualisation des donnees...";
-            await LoadDashboardDataAsync();
-            StatusTextBlock.Text = "[STATUT] [OK] Donnees actualisees !";
-        }
-
         private async void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             StatusTextBlock.Text = "[STATUT] Exportation des donnees...";
@@ -399,6 +399,232 @@ namespace GroupeV
                 loginWindow.Show();
                 this.Close();
             }
+        }
+
+        // ========== GRAPHIQUES ET ANALYTICS ==========
+
+        private async System.Threading.Tasks.Task LoadChartsAndAnalyticsAsync()
+        {
+            try
+            {
+                if (_productsData == null || !_productsData.Any())
+                    return;
+
+                // 1. Graphique Camembert des Categories
+                var categoriesGrouped = _productsData
+                    .GroupBy(p => p.CategorieNom ?? "Non catégorisé")
+                    .Select(g => new { Category = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+
+                var pieSeries = categoriesGrouped.Select(c => new PieSeries<int>
+                {
+                    Values = new[] { c.Count },
+                    Name = $"{c.Category} ({c.Count})",
+                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                    DataLabelsSize = 12,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle
+                }).ToArray();
+
+                CategoriesPieChart.Series = pieSeries;
+
+                // 2. Graphique Barres des Vendeurs
+                var vendeursGrouped = _productsData
+                    .GroupBy(p => p.VendeurNom ?? "Inconnu")
+                    .Select(g => new { Vendeur = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .Take(10)
+                    .ToList();
+
+                var columnSeries = new ColumnSeries<int>
+                {
+                    Values = vendeursGrouped.Select(v => v.Count).ToArray(),
+                    Name = "Produits",
+                    Fill = new SolidColorPaint(SKColor.Parse("#00FF00")),
+                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                    DataLabelsSize = 10,
+                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.End
+                };
+
+                VendeursBarChart.Series = new ISeries[] { columnSeries };
+                VendeursBarChart.XAxes = new[]
+                {
+                    new Axis
+                    {
+                        Labels = vendeursGrouped.Select(v => v.Vendeur.Length > 15 ? v.Vendeur.Substring(0, 12) + "..." : v.Vendeur).ToArray(),
+                        LabelsRotation = 45,
+                        TextSize = 10,
+                        LabelsPaint = new SolidColorPaint(SKColor.Parse("#00CC00"))
+                    }
+                };
+                VendeursBarChart.YAxes = new[]
+                {
+                    new Axis
+                    {
+                        TextSize = 10,
+                        LabelsPaint = new SolidColorPaint(SKColor.Parse("#00CC00"))
+                    }
+                };
+
+                // 3. Graphique Prix Moyens par Categorie
+                var prixMoyensGrouped = _productsData
+                    .Where(p => p.Prix.HasValue)
+                    .GroupBy(p => p.CategorieNom ?? "Non catégorisé")
+                    .Select(g => new { 
+                        Category = g.Key, 
+                        AvgPrice = g.Average(p => (double)p.Prix!.Value) 
+                    })
+                    .OrderByDescending(x => x.AvgPrice)
+                    .Take(10)
+                    .ToList();
+
+                var barSeries = new ColumnSeries<double>
+                {
+                    Values = prixMoyensGrouped.Select(c => c.AvgPrice).ToArray(),
+                    Name = "Prix Moyen (€)",
+                    Fill = new SolidColorPaint(SKColor.Parse("#FFD700")),
+                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                    DataLabelsSize = 10,
+                    DataLabelsFormatter = point => $"{point.PrimaryValue:F2}€"
+                };
+
+                PrixMoyensChart.Series = new ISeries[] { barSeries };
+                PrixMoyensChart.XAxes = new[]
+                {
+                    new Axis
+                    {
+                        Labels = prixMoyensGrouped.Select(c => c.Category.Length > 12 ? c.Category.Substring(0, 9) + "..." : c.Category).ToArray(),
+                        LabelsRotation = 45,
+                        TextSize = 10,
+                        LabelsPaint = new SolidColorPaint(SKColor.Parse("#00CC00"))
+                    }
+                };
+                PrixMoyensChart.YAxes = new[]
+                {
+                    new Axis
+                    {
+                        TextSize = 10,
+                        LabelsPaint = new SolidColorPaint(SKColor.Parse("#00CC00")),
+                        Labeler = value => $"{value:F0}€"
+                    }
+                };
+
+                // 4. Analytics Avancés
+                var productsWithPrice = _productsData.Where(p => p.Prix.HasValue).ToList();
+                
+                if (productsWithPrice.Any())
+                {
+                    var mostExpensive = productsWithPrice.OrderByDescending(p => p.Prix).First();
+                    MostExpensiveProductTextBlock.Text = mostExpensive.Description ?? "N/A";
+                    MostExpensivePriceTextBlock.Text = $"{mostExpensive.Prix:F2}€";
+
+                    var leastExpensive = productsWithPrice.OrderBy(p => p.Prix).First();
+                    LeastExpensiveProductTextBlock.Text = leastExpensive.Description ?? "N/A";
+                    LeastExpensivePriceTextBlock.Text = $"{leastExpensive.Prix:F2}€";
+
+                    var averagePrice = productsWithPrice.Average(p => (double)p.Prix!.Value);
+                    AveragePriceTextBlock.Text = $"{averagePrice:F2}€";
+
+                    // Animation pour le prix moyen
+                    AnimateNumberTextBlock(AveragePriceTextBlock, 0, averagePrice, TimeSpan.FromSeconds(2));
+                }
+
+                // 5. Heatmap d'activité (derniers 7 jours)
+                LoadActivityHeatmap();
+
+                await System.Threading.Tasks.Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                StatusTextBlock.Text = $"[ERREUR] Impossible de charger les graphiques: {ex.Message}";
+            }
+        }
+
+        private void LoadActivityHeatmap()
+        {
+            ActivityHeatmapPanel.Children.Clear();
+
+            var last7Days = Enumerable.Range(0, 7)
+                .Select(i => DateTime.Now.AddDays(-i))
+                .Reverse()
+                .ToList();
+
+            foreach (var day in last7Days)
+            {
+                var dayProducts = _productsData.Count(p => p.CreatedAt.Date == day.Date);
+                
+                var intensity = dayProducts > 0 ? Math.Min(dayProducts / 5.0, 1.0) : 0;
+                var color = GetHeatmapColor(intensity);
+
+                var dayBorder = new Border
+                {
+                    Background = new SolidColorBrush(color),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(0, 204, 0)),
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(8, 5, 8, 5),
+                    Margin = new Thickness(0, 0, 0, 5),
+                    CornerRadius = new CornerRadius(3)
+                };
+
+                var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                
+                var dateText = new TextBlock
+                {
+                    Text = day.ToString("ddd dd/MM"),
+                    FontFamily = new FontFamily("Consolas"),
+                    FontSize = 10,
+                    Foreground = new SolidColorBrush(Colors.LimeGreen),
+                    Width = 80
+                };
+
+                var countText = new TextBlock
+                {
+                    Text = $"{dayProducts} produit(s)",
+                    FontFamily = new FontFamily("Consolas"),
+                    FontSize = 10,
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontWeight = FontWeights.Bold
+                };
+
+                stackPanel.Children.Add(dateText);
+                stackPanel.Children.Add(countText);
+                dayBorder.Child = stackPanel;
+
+                ActivityHeatmapPanel.Children.Add(dayBorder);
+            }
+        }
+
+        private Color GetHeatmapColor(double intensity)
+        {
+            if (intensity == 0) return Color.FromRgb(10, 10, 10);
+            if (intensity < 0.2) return Color.FromRgb(0, 50, 0);
+            if (intensity < 0.4) return Color.FromRgb(0, 100, 0);
+            if (intensity < 0.6) return Color.FromRgb(0, 150, 0);
+            if (intensity < 0.8) return Color.FromRgb(0, 200, 0);
+            return Color.FromRgb(0, 255, 0);
+        }
+
+        private void AnimateNumberTextBlock(TextBlock textBlock, double from, double to, TimeSpan duration)
+        {
+            var animation = new DoubleAnimation
+            {
+                From = from,
+                To = to,
+                Duration = duration,
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            var animationClock = animation.CreateClock();
+            animationClock.CurrentTimeInvalidated += (s, e) =>
+            {
+                if (animationClock.CurrentTime.HasValue)
+                {
+                    var progress = animationClock.CurrentTime.Value.TotalSeconds / duration.TotalSeconds;
+                    var currentValue = from + (to - from) * progress;
+                    textBlock.Text = $"{currentValue:F2}€";
+                }
+            };
+            animationClock.Controller?.Begin();
         }
     }
 }
