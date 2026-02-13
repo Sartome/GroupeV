@@ -42,7 +42,7 @@ namespace GroupeV
 
         // Calculated properties
         [NotMapped]
-        public string PrixFormate => PrixPrevente.HasValue ? $"{PrixPrevente.Value:N2} DH" : "N/A";
+        public string PrixFormate => PrixPrevente.HasValue ? $"{PrixPrevente.Value:N2} €" : "N/A";
 
         [NotMapped]
         public bool EstActif => DateLimite.HasValue && DateLimite.Value > DateTime.Now;

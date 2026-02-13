@@ -4,634 +4,366 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:GroupeV"
+    xmlns:vm="clr-namespace:GroupeV.ViewModels"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     mc:Ignorable="d"
-    Title="** TERMINAL VENDEUR v2.0 **" 
-    Height="800" Width="1400"
-    Background="Black"
+    Title="GroupeV — Tableau de Bord" 
+    MinHeight="600" MinWidth="900"
+    Height="850" Width="1440"
+    Background="{StaticResource NeuBackgroundBrush}"
     WindowStartupLocation="CenterScreen"
-    Loaded="MainWindow_LoadedAnimation">
-    
-<Window.Resources>
-    <!-- Animations -->
-    <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever" AutoReverse="True">
-        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                       From="0.7" To="1" Duration="0:0:1.5"/>
-    </Storyboard>
+    Loaded="MainWindow_Loaded">
 
-    <Storyboard x:Key="GlowAnimation" RepeatBehavior="Forever" AutoReverse="True">
-        <DoubleAnimation Storyboard.TargetProperty="(Effect).(DropShadowEffect.BlurRadius)"
-                       From="10" To="25" Duration="0:0:2"/>
-    </Storyboard>
+    <Window.DataContext>
+        <vm:DashboardViewModel/>
+    </Window.DataContext>
 
-    <Storyboard x:Key="SlideInAnimation">
-        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                       From="-100" To="0" Duration="0:0:0.5">
-            <DoubleAnimation.EasingFunction>
-                <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
-    </Storyboard>
+    <Window.Resources>
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
 
-    <Storyboard x:Key="RotateAnimation" RepeatBehavior="Forever">
-        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                       From="0" To="360" Duration="0:0:4"/>
-    </Storyboard>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-    <!-- Hacker Button Style avec animations -->
-    <Style x:Key="HackerButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="#0A0A0A"/>
-        <Setter Property="Foreground" Value="LimeGreen"/>
-        <Setter Property="FontFamily" Value="Consolas"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Padding" Value="15,10"/>
-        <Setter Property="Margin" Value="5"/>
-        <Setter Property="BorderBrush" Value="LimeGreen"/>
-        <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="LimeGreen" BlurRadius="10" ShadowDepth="0" Opacity="0.5"/>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="LimeGreen"/>
-                <Setter Property="Foreground" Value="Black"/>
-                <Setter Property="Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="LimeGreen" BlurRadius="25" ShadowDepth="0"/>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+        <!-- ═══ HEADER ═══ -->
+        <Border Grid.Row="0" Style="{StaticResource NeuCard}" CornerRadius="0,0,24,24" Padding="28,18" Margin="0,0,0,4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-    <!-- Hacker Panel Style avec effets -->
-    <Style x:Key="HackerPanelStyle" TargetType="Border">
-        <Setter Property="Background" Value="#0F0F0F"/>
-        <Setter Property="BorderBrush" Value="LimeGreen"/>
-        <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="15"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0" Opacity="0.3"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-</Window.Resources>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource NeuStatCard}" CornerRadius="16" Padding="10" Width="48" Height="48"
+                            Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="€" FontSize="22" FontWeight="Bold" 
+                                   Foreground="{StaticResource NeuAccentBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock FontFamily="{StaticResource NeuFontFamily}" FontSize="22" FontWeight="Bold" 
+                                   Foreground="{StaticResource NeuTextPrimaryBrush}"
+                                   Text="Centre de Commande Vendeur"/>
+                        <TextBlock Text="{Binding WelcomeMessage}" 
+                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="13" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </StackPanel>
 
-<Grid>
-    <Grid.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#000000" Offset="0"/>
-            <GradientStop Color="#001a00" Offset="0.3"/>
-            <GradientStop Color="#000000" Offset="0.7"/>
-            <GradientStop Color="#001a00" Offset="1"/>
-        </LinearGradientBrush>
-    </Grid.Background>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Ellipse Width="10" Height="10" Fill="{StaticResource NeuSuccessBrush}" Margin="0,0,8,0"/>
+                    <TextBlock Text="En ligne" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" 
+                               Foreground="{StaticResource NeuSuccessBrush}" FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-    <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
+        <!-- ═══ STATS CARDS (adaptive wrap) ═══ -->
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="24,16,24,8">
+            <UniformGrid Rows="1" MinWidth="800">
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Mes Produits" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding TotalProduits}" FontFamily="{StaticResource NeuFontFamily}" 
+                                   FontSize="34" FontWeight="Bold" Foreground="{StaticResource NeuAccentBrush}" Margin="0,6,0,0"/>
+                        <TextBlock Text="dans mon catalogue" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Catégories" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding TotalCategories}" FontFamily="{StaticResource NeuFontFamily}" 
+                                   FontSize="34" FontWeight="Bold" Foreground="{StaticResource NeuWarningBrush}" Margin="0,6,0,0"/>
+                        <TextBlock Text="catégories de produits" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Prix Moyen" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding AveragePrice}" FontFamily="{StaticResource NeuMonoFont}" 
+                                   FontSize="24" FontWeight="Bold" Foreground="{StaticResource NeuSuccessBrush}" Margin="0,6,0,0"/>
+                        <TextBlock Text="prix moyen global" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource NeuStatCard}">
+                    <StackPanel>
+                        <TextBlock Text="Vendeur Actif" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding ActiveSellerName}" FontFamily="{StaticResource NeuFontFamily}" 
+                                   FontSize="18" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" 
+                                   TextWrapping="Wrap" Margin="0,6,0,0"/>
+                        <TextBlock Text="{Binding ActiveSellerEmail}" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </ScrollViewer>
 
-    <!-- Particules animees -->
-    <Canvas x:Name="ParticlesCanvas" Grid.RowSpan="4" IsHitTestVisible="False"/>
-
-    <!-- HEADER avec animations -->
-    <Border Grid.Row="0" Background="#0A0A0A" BorderBrush="LimeGreen" BorderThickness="0,0,0,3" Padding="20,15"
-            x:Name="HeaderBorder">
-        <Border.Effect>
-            <DropShadowEffect Color="LimeGreen" BlurRadius="20" ShadowDepth="0"/>
-        </Border.Effect>
-        <Grid>
+        <!-- ═══ MAIN CONTENT ═══ -->
+        <Grid Grid.Row="2" Margin="24,8,24,16">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="240" MinWidth="180"/>
+                <ColumnDefinition Width="*" MinWidth="380"/>
+                <ColumnDefinition Width="320" MinWidth="260"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <!-- Logo anime -->
-                <Viewbox Width="40" Height="40" Margin="0,0,15,0">
-                    <Grid RenderTransformOrigin="0.5,0.5">
-                        <Grid.RenderTransform>
-                            <RotateTransform/>
-                        </Grid.RenderTransform>
-                        <Ellipse Width="40" Height="40" Stroke="LimeGreen" StrokeThickness="2" Fill="Transparent"/>
-                        <TextBlock Text="$" FontSize="25" FontWeight="Bold" Foreground="LimeGreen"
-                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Grid.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <BeginStoryboard Storyboard="{StaticResource RotateAnimation}"/>
-                            </EventTrigger>
-                        </Grid.Triggers>
-                    </Grid>
-                </Viewbox>
-
-                <StackPanel>
-                    <TextBlock FontFamily="Consolas" FontSize="28" FontWeight="Bold" Foreground="LimeGreen">
-                        <Run Text="** "/>
-                        <Run Text="CENTRE DE COMMANDE VENDEUR" Foreground="#00FF00"/>
-                        <Run Text=" **"/>
-                    </TextBlock>
-                    <TextBlock x:Name="WelcomeTextBlock" 
-                               Text="[SYSTEME] Initialisation interface vendeur..." 
-                               FontFamily="Consolas" 
-                               FontSize="12" 
-                               Foreground="#00CC00" 
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock FontFamily="Consolas" FontSize="10" Foreground="#00CC00" HorizontalAlignment="Right">
-                    <Run Text="[STATUT]"/>
-                </TextBlock>
-                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                    <Ellipse Width="12" Height="12" Fill="LimeGreen" Margin="0,0,8,0" x:Name="StatusIndicator">
-                        <Ellipse.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <BeginStoryboard Storyboard="{StaticResource PulseAnimation}"/>
-                            </EventTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
-                    <TextBlock Text="EN LIGNE" FontFamily="Consolas" FontSize="12" Foreground="LimeGreen" FontWeight="Bold"/>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-    </Border>
-
-    <!-- STATS DASHBOARD avec icones et animations -->
-    <Grid Grid.Row="1" Margin="20,20,20,10" x:Name="StatsGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- Total Products -->
-        <Border Grid.Column="0" Style="{StaticResource HackerPanelStyle}" Margin="0,0,10,0" x:Name="Panel1">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <TextBlock Text="[TOTAL PRODUITS]" FontFamily="Consolas" FontSize="11" Foreground="#00CC00"/>
-                    <TextBlock Text=" " FontSize="14" Foreground="Yellow" Margin="5,0,0,0"/>
-                </StackPanel>
-                <TextBlock x:Name="TotalSalesTextBlock" 
-                           Text="0" 
-                           FontFamily="Consolas" 
-                           FontSize="32" 
-                           FontWeight="Bold" 
-                           Foreground="LimeGreen">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock Text="produits dans le catalogue" FontFamily="Consolas" FontSize="10" Foreground="#00AA00" Margin="0,5,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Categories -->
-        <Border Grid.Column="1" Style="{StaticResource HackerPanelStyle}" Margin="0,0,10,0" x:Name="Panel2">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <TextBlock Text="[CATEGORIES]" FontFamily="Consolas" FontSize="11" Foreground="#00CC00"/>
-                    <TextBlock Text=" " FontSize="14" Foreground="Yellow" Margin="5,0,0,0"/>
-                </StackPanel>
-                <TextBlock x:Name="RevenueTextBlock" 
-                           Text="0 Categories" 
-                           FontFamily="Consolas" 
-                           FontSize="32" 
-                           FontWeight="Bold" 
-                           Foreground="LimeGreen">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock Text="categories de produits" FontFamily="Consolas" FontSize="10" Foreground="#00AA00" Margin="0,5,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Active Sellers -->
-        <Border Grid.Column="2" Style="{StaticResource HackerPanelStyle}" Margin="0,0,10,0" x:Name="Panel3">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <TextBlock Text="[VENDEURS ACTIFS]" FontFamily="Consolas" FontSize="11" Foreground="#00CC00"/>
-                    <TextBlock Text=" " FontSize="14" Foreground="Yellow" Margin="5,0,0,0"/>
-                </StackPanel>
-                <TextBlock x:Name="ProductsSoldTextBlock" 
-                           Text="0" 
-                           FontFamily="Consolas" 
-                           FontSize="32" 
-                           FontWeight="Bold" 
-                           Foreground="LimeGreen">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock Text="vendeurs enregistres" FontFamily="Consolas" FontSize="10" Foreground="#00AA00" Margin="0,5,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Active Seller -->
-        <Border Grid.Column="3" Style="{StaticResource HackerPanelStyle}" x:Name="Panel4">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <TextBlock Text="[VENDEUR ACTIF]" FontFamily="Consolas" FontSize="11" Foreground="#00CC00"/>
-                    <TextBlock Text=" " FontSize="14" Foreground="Yellow" Margin="5,0,0,0"/>
-                </StackPanel>
-                <TextBlock x:Name="ActiveSellerTextBlock" 
-                           Text="CHARGEMENT..." 
-                           FontFamily="Consolas" 
-                           FontSize="20" 
-                           FontWeight="Bold" 
-                           Foreground="LimeGreen"
-                           TextWrapping="Wrap">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock x:Name="SellerEmailTextBlock"
-                           Text="initialisation..." 
-                           FontFamily="Consolas" 
-                           FontSize="10" 
-                           Foreground="#00AA00" 
-                           Margin="0,5,0,0"
-                           TextTrimming="CharacterEllipsis"/>
-            </StackPanel>
-        </Border>
-    </Grid>
-
-        <!-- MAIN CONTENT AREA -->
-        <Grid Grid.Row="2" Margin="20,10,20,20" x:Name="MainContentGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="320"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="420"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- LEFT: NAVIGATION avec animations -->
-            <Border Grid.Column="0" Style="{StaticResource HackerPanelStyle}" Margin="0,0,10,0" x:Name="NavigationPanel">
+            <!-- LEFT: NAVIGATION -->
+            <Border Grid.Column="0" Style="{StaticResource NeuCard}" Margin="0,0,12,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                            <TextBlock Text="[OPERATIONS BASE DE DONNEES]" 
-                                       FontFamily="Consolas" 
-                                       FontSize="12" 
-                                       FontWeight="Bold" 
-                                       Foreground="LimeGreen"/>
-                            <TextBlock Text=" " FontSize="14" Foreground="Yellow" Margin="5,-2,0,0"/>
-                        </StackPanel>
+                        <TextBlock Text="Base de données" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
 
-                        <Button x:Name="TestConnectionButton" 
-                                Content="  TESTER CONNEXION" 
-                                Click="TestConnectionButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"
-                                Background="#0A3A0A"/>
+                        <Button x:Name="TestConnectionButton" Content="Tester Connexion" 
+                                Click="TestConnectionButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"/>
+                        <Button x:Name="ShowDiagnosticsButton" Content="Afficher Diagnostics" 
+                                Click="ShowDiagnosticsButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"/>
+                        <Button x:Name="HealthCheckButton" Content="Vérification Santé" 
+                                Click="HealthCheckButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"/>
 
-                        <Button x:Name="ShowDiagnosticsButton" 
-                                Content="  AFFICHER DIAGNOSTICS" 
-                                Click="ShowDiagnosticsButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"/>
+                        <Border Height="1" Background="{StaticResource NeuDarkShadowBrush}" Margin="0,12" Opacity="0.5"/>
 
-                        <Button x:Name="HealthCheckButton" 
-                                Content="  VERIFICATION SANTE" 
-                                Click="HealthCheckButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"/>
+                        <TextBlock Text="Opérations Données" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
 
-                        <Separator Background="#00CC00" Margin="0,15,0,15" Height="2" Opacity="0.5"/>
+                        <Button x:Name="AddProductButton" Content="Ajouter Produit" 
+                                Click="AddProductButton_Click" Style="{StaticResource NeuButtonAccent}" FontSize="12" Padding="12,8"/>
+                        <Button x:Name="EditProductButton" Content="Modifier Produit" 
+                                Click="EditProductButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"/>
+                        <Button x:Name="ExportButton" Content="Exporter Données" 
+                                Click="ExportButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"/>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="[OPERATIONS DONNEES]" 
-                                       FontFamily="Consolas" 
-                                       FontSize="11" 
-                                       Foreground="#00CC00"/>
-                            <TextBlock Text=" " FontSize="12" Foreground="Yellow" Margin="5,-2,0,0"/>
-                        </StackPanel>
+                        <Border Height="1" Background="{StaticResource NeuDarkShadowBrush}" Margin="0,12" Opacity="0.5"/>
 
-                        <Button x:Name="AddProductButton" 
-                                Content="  AJOUTER PRODUIT" 
-                                Click="AddProductButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"
-                                Background="#0A3A0A"/>
+                        <Button x:Name="LogoutButton" Content="Déconnexion" 
+                                Click="LogoutButton_Click" Style="{StaticResource NeuButtonDanger}" FontSize="12" Padding="12,8"/>
 
-                        <Button x:Name="EditProductButton" 
-                                Content="  MODIFIER PRODUIT" 
-                                Click="EditProductButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"/>
+                        <Border Height="1" Background="{StaticResource NeuDarkShadowBrush}" Margin="0,12" Opacity="0.5"/>
 
-                        <Button x:Name="ExportButton" 
-                                Content="  EXPORTER DONNEES" 
-                                Click="ExportButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"/>
-
-                        <Separator Background="#00CC00" Margin="0,15,0,15" Height="2" Opacity="0.5"/>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="[COMPTE]" 
-                                       FontFamily="Consolas" 
-                                       FontSize="11" 
-                                       Foreground="#00CC00"/>
-                            <TextBlock Text=" " FontSize="12" Foreground="Red" Margin="5,-2,0,0"/>
-                        </StackPanel>
-
-                        <Button x:Name="LogoutButton" 
-                                Content="  DECONNEXION" 
-                                Click="LogoutButton_Click" 
-                                Style="{StaticResource HackerButtonStyle}"
-                                Background="#3A0A0A"/>
-
-                        <Separator Background="#00CC00" Margin="0,15,0,15" Height="2" Opacity="0.5"/>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="[STATISTIQUES RAPIDES]" 
-                                       FontFamily="Consolas" 
-                                       FontSize="11" 
-                                       Foreground="#00CC00"/>
-                            <TextBlock Text=" " FontSize="12" Foreground="Yellow" Margin="5,-2,0,0"/>
-                        </StackPanel>
-
-                        <Border Background="#0A0A0A" BorderBrush="#00CC00" BorderThickness="2" Padding="12" Margin="5" CornerRadius="3">
-                            <Border.Effect>
-                                <DropShadowEffect Color="LimeGreen" BlurRadius="10" ShadowDepth="0" Opacity="0.3"/>
-                            </Border.Effect>
-                            <StackPanel>
-                                <TextBlock x:Name="QuickStatsTextBlock"
-                                           Text="Base de donnees: vente_groupe&#x0a;Statut: Chargement...&#x0a;Serveur: localhost:3306"
-                                           FontFamily="Consolas" 
-                                           FontSize="10" 
-                                           Foreground="#00AA00"
-                                           TextWrapping="Wrap"
-                                           LineHeight="16"/>
-                            </StackPanel>
+                        <TextBlock Text="Statistiques Rapides" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
+                                   FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,8"/>
+                        <Border Style="{StaticResource NeuCardInset}" Padding="12">
+                            <TextBlock Text="{Binding QuickStats}" FontFamily="{StaticResource NeuMonoFont}" FontSize="10" 
+                                       Foreground="{StaticResource NeuTextSecondaryBrush}" TextWrapping="Wrap" LineHeight="16"/>
                         </Border>
                     </StackPanel>
                 </ScrollViewer>
             </Border>
 
-            <!-- CENTER: DATA GRID avec animations -->
-            <Border Grid.Column="1" Style="{StaticResource HackerPanelStyle}" x:Name="DataGridPanel" Margin="0,0,10,0">
+            <!-- CENTER: TABS (Produits / Factures) -->
+            <Border Grid.Column="1" Style="{StaticResource NeuCard}" Margin="0,0,12,0">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-                        <TextBlock Text="[PRODUITS RECENTS]" 
-                                   FontFamily="Consolas" 
-                                   FontSize="13" 
-                                   FontWeight="Bold" 
-                                   Foreground="LimeGreen"/>
-                        <TextBlock Text=" " FontSize="16" Foreground="Yellow" Margin="8,0,0,0"/>
+                    <!-- Tab buttons -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button x:Name="TabProduitsBtn" Content="📦 Mes Produits" 
+                                Click="TabProduits_Click" Style="{StaticResource NeuButtonAccent}"
+                                Height="36" FontSize="13" Margin="0,0,8,0"/>
+                        <Button x:Name="TabFacturesBtn" Content="📄 Factures" 
+                                Click="TabFactures_Click" Style="{StaticResource NeuButton}"
+                                Height="36" FontSize="13"/>
                     </StackPanel>
 
-                    <Border Grid.Row="1" Background="Black" BorderBrush="#00CC00" BorderThickness="2" CornerRadius="3">
-                        <Border.Effect>
-                            <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0" Opacity="0.3"/>
-                        </Border.Effect>
+                    <!-- Search bar -->
+                    <TextBox Grid.Row="1" x:Name="SearchBox" Style="{StaticResource NeuTextBox}" 
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Height="40" FontSize="13" Margin="0,0,0,12"/>
+
+                    <!-- PRODUITS TAB -->
+                    <Border Grid.Row="2" x:Name="ProduitsTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="14">
                         <DataGrid x:Name="SalesDataGrid"
-                                  AutoGenerateColumns="False"
-                                  IsReadOnly="True"
-                                  Background="Black"
-                                  Foreground="LimeGreen"
-                                  BorderThickness="0"
-                                  GridLinesVisibility="Horizontal"
-                                  HeadersVisibility="Column"
-                                  RowBackground="#0A0A0A"
-                                  AlternatingRowBackground="#0F0F0F"
-                                  FontFamily="Consolas"
-                                  FontSize="11"
-                                  CanUserAddRows="False"
-                                  SelectionMode="Single">
-                            
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#0A0A0A"/>
-                                    <Setter Property="Foreground" Value="LimeGreen"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
-                                    <Setter Property="FontWeight" Value="Bold"/>
-                                    <Setter Property="FontSize" Value="11"/>
-                                    <Setter Property="Padding" Value="10,8"/>
-                                    <Setter Property="BorderBrush" Value="#00CC00"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
-
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Padding" Value="10,5"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#1A4D1A"/>
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.CellStyle>
-
+                                  Style="{StaticResource NeuDataGrid}"
+                                  ItemsSource="{Binding FilteredProduits}"
+                                  SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                  ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
+                                  CellStyle="{StaticResource NeuDataGridCell}"
+                                  RowStyle="{StaticResource NeuDataGridRow}"
+                                  RowHeight="50">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header=" ID" Binding="{Binding IdProduit}" Width="70"/>
-                                <DataGridTextColumn Header=" PRODUIT" Binding="{Binding Description}" Width="*" MinWidth="250"/>
-                                <DataGridTextColumn Header=" PRIX" Binding="{Binding PrixFormate}" Width="100"/>
-                                <DataGridTextColumn Header=" CATEGORIE" Binding="{Binding CategorieNom}" Width="*" MinWidth="140"/>
-                                <DataGridTextColumn Header=" VENDEUR" Binding="{Binding VendeurNom}" Width="*" MinWidth="140"/>
-                                <DataGridTextColumn Header=" CREE LE" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="110"/>
+                                <DataGridTextColumn Header="ID" Binding="{Binding IdProduit}" Width="55"/>
+                                <DataGridTemplateColumn Header="Image" Width="60">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Width="40" Height="40" CornerRadius="8" 
+                                                    Background="{StaticResource NeuDarkShadowBrush}" ClipToBounds="True">
+                                                <Image Source="{Binding ImageAbsolutePath}" Stretch="UniformToFill"
+                                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Produit" Binding="{Binding Description}" Width="*" MinWidth="150"/>
+                                <DataGridTextColumn Header="Prix" Binding="{Binding PrixFormate}" Width="100"/>
+                                <DataGridTemplateColumn Header="Type" Width="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" Padding="8,4" HorizontalAlignment="Left" Opacity="0.9">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding TypeVente}" Value="0">
+                                                                <Setter Property="Background" Value="{StaticResource NeuSuccessBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TypeVente}" Value="1">
+                                                                <Setter Property="Background" Value="{StaticResource NeuWarningBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TypeVente}" Value="2">
+                                                                <Setter Property="Background" Value="{StaticResource NeuDangerBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding TypeVenteBadge}" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Catégorie" Width="130">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{StaticResource NeuAccentBrush}" CornerRadius="10" 
+                                                    Padding="8,4" HorizontalAlignment="Left" Opacity="0.85">
+                                                <TextBlock Text="{Binding CategorieNom}" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Créé le" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="95"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <!-- FACTURES TAB -->
+                    <Border Grid.Row="2" x:Name="FacturesTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="14"
+                            Visibility="Collapsed">
+                        <DataGrid Style="{StaticResource NeuDataGrid}"
+                                  ItemsSource="{Binding Factures}"
+                                  ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
+                                  CellStyle="{StaticResource NeuDataGridCell}"
+                                  RowStyle="{StaticResource NeuDataGridRow}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="N°" Binding="{Binding IdPrevente}" Width="55"/>
+                                <DataGridTextColumn Header="Article" Binding="{Binding ProduitDescription}" Width="*" MinWidth="150"/>
+                                <DataGridTextColumn Header="Prix Prévente" Binding="{Binding PrixFormate}" Width="110"/>
+                                <DataGridTextColumn Header="Qté Min" Binding="{Binding NombreMin}" Width="70"/>
+                                <DataGridTemplateColumn Header="Statut" Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" Padding="8,4" HorizontalAlignment="Left" Opacity="0.9"
+                                                    Background="{StaticResource NeuWarningBrush}">
+                                                <TextBlock Text="{Binding StatutBadge}" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Date Limite" Binding="{Binding DateLimiteFormate}" Width="100"/>
+                                <DataGridTextColumn Header="Créé le" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="95"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
                 </Grid>
             </Border>
 
-            <!-- RIGHT: GRAPHIQUES ET ANALYTICS -->
+            <!-- RIGHT: CHARTS & ANALYTICS -->
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <!-- Graphique Camembert Categories -->
-                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,12">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="[REPARTITION CATEGORIES]" 
-                                           FontFamily="Consolas" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           Foreground="LimeGreen"/>
-                                <TextBlock Text=" 📊" FontSize="14" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <lvc:PieChart x:Name="CategoriesPieChart" 
-                                          Height="200" 
-                                          Background="Black"
-                                          LegendPosition="Right"/>
+                            <TextBlock Text="Répartition Catégories" FontFamily="{StaticResource NeuFontFamily}" 
+                                       FontSize="14" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <lvc:PieChart x:Name="CategoriesPieChart" Height="200" Background="Transparent" LegendPosition="Right"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Graphique Barres Vendeurs -->
-                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,12">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="[PRODUITS PAR VENDEUR]" 
-                                           FontFamily="Consolas" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           Foreground="LimeGreen"/>
-                                <TextBlock Text=" 📈" FontSize="14" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <lvc:CartesianChart x:Name="VendeursBarChart" 
-                                                Height="220" 
-                                                Background="Black"/>
+                            <TextBlock Text="Prix Moyens par Catégorie" FontFamily="{StaticResource NeuFontFamily}" 
+                                       FontSize="14" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <lvc:CartesianChart x:Name="PrixMoyensChart" Height="200" Background="Transparent"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Prix Moyens par Categorie -->
-                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,12">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="[PRIX MOYENS]" 
-                                           FontFamily="Consolas" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           Foreground="LimeGreen"/>
-                                <TextBlock Text=" 💰" FontSize="14" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <lvc:CartesianChart x:Name="PrixMoyensChart" 
-                                                Height="200" 
-                                                Background="Black"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Mini Stats Cards -->
-                    <Border Style="{StaticResource HackerPanelStyle}" Margin="0,0,0,10">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="[ANALYTICS AVANCÉS]" 
-                                           FontFamily="Consolas" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           Foreground="LimeGreen"/>
-                                <TextBlock Text=" 🔥" FontSize="14" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            
-                            <!-- Produit le plus cher -->
-                            <Border Background="#0A0A0A" BorderBrush="#FFD700" BorderThickness="2" 
-                                    Padding="10" Margin="0,0,0,8" CornerRadius="3">
+                            <TextBlock Text="Analytics" FontFamily="{StaticResource NeuFontFamily}" 
+                                       FontSize="14" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,12"/>
+                            <Border Style="{StaticResource NeuCardInset}" Margin="0,0,0,10">
                                 <StackPanel>
-                                    <TextBlock Text="💎 PRODUIT LE PLUS CHER" 
-                                               FontFamily="Consolas" 
-                                               FontSize="10" 
-                                               Foreground="#FFD700"/>
-                                    <TextBlock x:Name="MostExpensiveProductTextBlock" 
-                                               Text="--" 
-                                               FontFamily="Consolas" 
-                                               FontSize="14" 
-                                               FontWeight="Bold" 
-                                               Foreground="White"
-                                               TextWrapping="Wrap"
-                                               Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="MostExpensivePriceTextBlock" 
-                                               Text="0.00€" 
-                                               FontFamily="Consolas" 
-                                               FontSize="12" 
-                                               Foreground="#FFD700"/>
+                                    <TextBlock Text="Produit le plus cher" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                               Foreground="{StaticResource NeuWarningBrush}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding MostExpensiveProduct}" FontFamily="{StaticResource NeuFontFamily}" FontSize="14" 
+                                               FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding MostExpensivePrice}" FontFamily="{StaticResource NeuMonoFont}" FontSize="13" 
+                                               Foreground="{StaticResource NeuWarningBrush}"/>
                                 </StackPanel>
                             </Border>
-
-                            <!-- Produit le moins cher -->
-                            <Border Background="#0A0A0A" BorderBrush="#00BFFF" BorderThickness="2" 
-                                    Padding="10" Margin="0,0,0,8" CornerRadius="3">
+                            <Border Style="{StaticResource NeuCardInset}" Margin="0,0,0,10">
                                 <StackPanel>
-                                    <TextBlock Text="🎯 PRODUIT LE MOINS CHER" 
-                                               FontFamily="Consolas" 
-                                               FontSize="10" 
-                                               Foreground="#00BFFF"/>
-                                    <TextBlock x:Name="LeastExpensiveProductTextBlock" 
-                                               Text="--" 
-                                               FontFamily="Consolas" 
-                                               FontSize="14" 
-                                               FontWeight="Bold" 
-                                               Foreground="White"
-                                               TextWrapping="Wrap"
-                                               Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="LeastExpensivePriceTextBlock" 
-                                               Text="0.00€" 
-                                               FontFamily="Consolas" 
-                                               FontSize="12" 
-                                               Foreground="#00BFFF"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Prix moyen global -->
-                            <Border Background="#0A0A0A" BorderBrush="LimeGreen" BorderThickness="2" 
-                                    Padding="10" CornerRadius="3">
-                                <StackPanel>
-                                    <TextBlock Text="📊 PRIX MOYEN GLOBAL" 
-                                               FontFamily="Consolas" 
-                                               FontSize="10" 
-                                               Foreground="LimeGreen"/>
-                                    <TextBlock x:Name="AveragePriceTextBlock" 
-                                               Text="0.00€" 
-                                               FontFamily="Consolas" 
-                                               FontSize="18" 
-                                               FontWeight="Bold" 
-                                               Foreground="LimeGreen">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect Color="LimeGreen" BlurRadius="15" ShadowDepth="0"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
+                                    <TextBlock Text="Produit le moins cher" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
+                                               Foreground="{StaticResource NeuAccentBrush}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding LeastExpensiveProduct}" FontFamily="{StaticResource NeuFontFamily}" FontSize="14" 
+                                               FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding LeastExpensivePrice}" FontFamily="{StaticResource NeuMonoFont}" FontSize="13" 
+                                               Foreground="{StaticResource NeuAccentBrush}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                     </Border>
 
-                    <!-- Heatmap Activité -->
-                    <Border Style="{StaticResource HackerPanelStyle}">
+                    <Border Style="{StaticResource NeuCard}">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="[ACTIVITÉ RÉCENTE]" 
-                                           FontFamily="Consolas" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           Foreground="LimeGreen"/>
-                                <TextBlock Text=" ⚡" FontSize="14" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <StackPanel x:Name="ActivityHeatmapPanel">
-                                <!-- Sera rempli dynamiquement -->
-                            </StackPanel>
+                            <TextBlock Text="Activité Récente" FontFamily="{StaticResource NeuFontFamily}" 
+                                       FontSize="14" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <StackPanel x:Name="ActivityHeatmapPanel"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
 
-        <!-- FOOTER avec animations -->
-        <Border Grid.Row="3" Background="#0A0A0A" BorderBrush="LimeGreen" BorderThickness="0,3,0,0" Padding="15,12" x:Name="FooterBorder">
-            <Border.Effect>
-                <DropShadowEffect Color="LimeGreen" BlurRadius="20" ShadowDepth="0" Opacity="0.5"/>
-            </Border.Effect>
+        <!-- ═══ FOOTER ═══ -->
+        <Border Grid.Row="3" Style="{StaticResource NeuCard}" CornerRadius="24,24,0,0" Padding="24,12" Margin="0,4,0,0">
             <Grid>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="  " FontSize="12" Foreground="LimeGreen" Margin="0,0,8,0"/>
-                    <TextBlock x:Name="StatusTextBlock" 
-                               Text="[STATUT] Systeme pret" 
-                               FontFamily="Consolas" 
-                               FontSize="11" 
-                               Foreground="#00CC00"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Text="  " FontSize="12" Foreground="Yellow" Margin="0,0,8,0"/>
-                    <TextBlock x:Name="RecordCountTextBlock" 
-                               Text="[ENREGISTREMENTS] 0 produits charges" 
-                               FontFamily="Consolas" 
-                               FontSize="11" 
-                               Foreground="#00CC00"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                <TextBlock Text="{Binding StatusMessage}" FontFamily="{StaticResource NeuMonoFont}" FontSize="12" 
+                           Foreground="{StaticResource NeuTextSecondaryBrush}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding RecordCount}" FontFamily="{StaticResource NeuMonoFont}" FontSize="12" 
+                           Foreground="{StaticResource NeuTextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
+        </Border>
+
+        <!-- ═══ TOAST NOTIFICATION OVERLAY ═══ -->
+        <Border Grid.RowSpan="4" Style="{StaticResource NeuToast}"
+                Visibility="{Binding IsToastVisible, Converter={StaticResource BoolToVis}}"
+                Panel.ZIndex="100">
+            <TextBlock Text="{Binding ToastMessage}" FontFamily="{StaticResource NeuFontFamily}" FontSize="13"
+                       Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" MaxWidth="320"/>
         </Border>
     </Grid>
 </Window>

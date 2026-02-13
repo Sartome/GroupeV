@@ -44,6 +44,9 @@ namespace GroupeV
         [Column("id_categorie")]
         public int? IdCategorie { get; set; }
 
+        [Column("type_vente")]
+        public int TypeVente { get; set; } = 0; // 0=Standard, 1=VenteGroupe, 2=Enchere
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
@@ -59,12 +62,48 @@ namespace GroupeV
 
         // Calculated properties
         [NotMapped]
-        public string PrixFormate => Prix.HasValue ? $"{Prix.Value:N2} DH" : "N/A";
+        public string PrixFormate => Prix.HasValue ? $"{Prix.Value:N2} €" : "N/A";
 
         [NotMapped]
         public string CategorieNom => Categorie?.Libelle ?? "Sans catégorie";
 
         [NotMapped]
         public string VendeurNom => Vendeur?.NomComplet ?? "Unknown";
+
+        /// <summary>
+        /// Retourne le type de vente typé.
+        /// </summary>
+        [NotMapped]
+        public TypeVente TypeVenteEnum => (TypeVente)TypeVente;
+
+        /// <summary>
+        /// Retourne le type de vente formaté pour affichage.
+        /// </summary>
+        [NotMapped]
+        public string TypeVenteDisplay => TypeVenteEnum.ToDisplayString();
+
+        /// <summary>
+        /// Retourne le texte du badge pour le type de vente.
+        /// </summary>
+        [NotMapped]
+        public string TypeVenteBadge => TypeVenteEnum.ToBadgeText();
+
+        /// <summary>
+        /// Retourne le chemin d'image local s'il existe, sinon null.
+        /// </summary>
+        [NotMapped]
+        public string? ImageAbsolutePath
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Image)) return null;
+                if (System.IO.File.Exists(Image)) return Image;
+                var localPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", Image);
+                return System.IO.File.Exists(localPath) ? localPath : null;
+            }
+        }
+
+        [NotMapped]
+        public bool HasImage => ImageAbsolutePath != null;
     }
 }

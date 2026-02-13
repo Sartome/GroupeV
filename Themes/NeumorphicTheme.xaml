@@ -1,0 +1,363 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEUMORPHISM (SOFT UI) THEME — GroupeV
+         Palette : gris bleuté doux avec accent indigo/violet
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- ═══ PALETTE DE COULEURS ═══ -->
+    <Color x:Key="NeuBackground">#E0E5EC</Color>
+    <Color x:Key="NeuSurface">#E0E5EC</Color>
+    <Color x:Key="NeuLightShadow">#FFFFFF</Color>
+    <Color x:Key="NeuDarkShadow">#A3B1C6</Color>
+    <Color x:Key="NeuAccent">#6C63FF</Color>
+    <Color x:Key="NeuAccentLight">#8B83FF</Color>
+    <Color x:Key="NeuAccentDark">#4F46E5</Color>
+    <Color x:Key="NeuTextPrimary">#2D3748</Color>
+    <Color x:Key="NeuTextSecondary">#718096</Color>
+    <Color x:Key="NeuSuccess">#48BB78</Color>
+    <Color x:Key="NeuDanger">#F56565</Color>
+    <Color x:Key="NeuWarning">#ED8936</Color>
+    <Color x:Key="NeuInputBg">#E0E5EC</Color>
+
+    <SolidColorBrush x:Key="NeuBackgroundBrush"   Color="{StaticResource NeuBackground}"/>
+    <SolidColorBrush x:Key="NeuSurfaceBrush"      Color="{StaticResource NeuSurface}"/>
+    <SolidColorBrush x:Key="NeuAccentBrush"        Color="{StaticResource NeuAccent}"/>
+    <SolidColorBrush x:Key="NeuAccentLightBrush"   Color="{StaticResource NeuAccentLight}"/>
+    <SolidColorBrush x:Key="NeuAccentDarkBrush"    Color="{StaticResource NeuAccentDark}"/>
+    <SolidColorBrush x:Key="NeuTextPrimaryBrush"   Color="{StaticResource NeuTextPrimary}"/>
+    <SolidColorBrush x:Key="NeuTextSecondaryBrush" Color="{StaticResource NeuTextSecondary}"/>
+    <SolidColorBrush x:Key="NeuSuccessBrush"       Color="{StaticResource NeuSuccess}"/>
+    <SolidColorBrush x:Key="NeuDangerBrush"        Color="{StaticResource NeuDanger}"/>
+    <SolidColorBrush x:Key="NeuWarningBrush"       Color="{StaticResource NeuWarning}"/>
+    <SolidColorBrush x:Key="NeuLightShadowBrush"   Color="{StaticResource NeuLightShadow}"/>
+    <SolidColorBrush x:Key="NeuDarkShadowBrush"    Color="{StaticResource NeuDarkShadow}"/>
+
+    <!-- ═══ TYPOGRAPHIE ═══ -->
+    <FontFamily x:Key="NeuFontFamily">Segoe UI, Arial</FontFamily>
+    <FontFamily x:Key="NeuMonoFont">Cascadia Code, Consolas</FontFamily>
+
+    <!-- ═══ STYLE CARTE NEUMORPHIQUE (CONVEXE) ═══ -->
+    <Style x:Key="NeuCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="20" ShadowDepth="8"
+                                  Direction="315" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Carte concave (enfoncée) -->
+    <Style x:Key="NeuCardInset" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource NeuDarkShadowBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="6" ShadowDepth="2"
+                                  Direction="135" Opacity="0.35"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ BOUTON NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="20,12"/>
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="14" 
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <Border.Effect>
+                            <DropShadowEffect x:Name="BdShadow" Color="{StaticResource NeuDarkShadow}" 
+                                              BlurRadius="16" ShadowDepth="6" Direction="315" Opacity="0.45"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
+                                                      BlurRadius="22" ShadowDepth="4" Direction="315" Opacity="0.35"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="{StaticResource NeuDarkShadow}" 
+                                                      BlurRadius="4" ShadowDepth="1" Direction="135" Opacity="0.6"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuDarkShadowBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Bouton accent (primaire) -->
+    <Style x:Key="NeuButtonAccent" TargetType="Button" BasedOn="{StaticResource NeuButton}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
+                    <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- Bouton danger -->
+    <Style x:Key="NeuButtonDanger" TargetType="Button" BasedOn="{StaticResource NeuButton}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FC8181" Offset="0"/>
+                    <GradientStop Color="{StaticResource NeuDanger}" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- ═══ TEXTBOX NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuTextBox" TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CaretBrush" Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Bd" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="14" 
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="1" BorderBrush="{StaticResource NeuDarkShadowBrush}"
+                            SnapsToDevicePixels="True">
+                        <Border.Effect>
+                            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" 
+                                              BlurRadius="6" ShadowDepth="2" Direction="135" Opacity="0.35"/>
+                        </Border.Effect>
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                            <Setter TargetName="Bd" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
+                                                      BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ PASSWORDBOX NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuPasswordBox" TargetType="PasswordBox">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CaretBrush" Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="PasswordBox">
+                    <Border x:Name="Bd" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="14" 
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="1" BorderBrush="{StaticResource NeuDarkShadowBrush}"
+                            SnapsToDevicePixels="True">
+                        <Border.Effect>
+                            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" 
+                                              BlurRadius="6" ShadowDepth="2" Direction="135" Opacity="0.35"/>
+                        </Border.Effect>
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                            <Setter TargetName="Bd" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
+                                                      BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ DATAGRID NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuDataGrid" TargetType="DataGrid">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="RowBackground" Value="Transparent"/>
+        <Setter Property="AlternatingRowBackground" Value="#D5DAE2"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="CanUserAddRows" Value="False"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+        <Setter Property="RowHeight" Value="44"/>
+        <Setter Property="EnableRowVirtualization" Value="True"/>
+        <Setter Property="EnableColumnVirtualization" Value="True"/>
+        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+    </Style>
+
+    <Style x:Key="NeuDataGridColumnHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextSecondaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        <Setter Property="BorderBrush" Value="{StaticResource NeuDarkShadowBrush}"/>
+    </Style>
+
+    <Style x:Key="NeuDataGridCell" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Background="{TemplateBinding Background}" 
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.15"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="{StaticResource NeuAccentDarkBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="NeuDataGridRow" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="0,1"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.07"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.12"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ═══ COMBOBOX NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuComboBox" TargetType="ComboBox">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource NeuDarkShadowBrush}"/>
+    </Style>
+
+    <!-- ═══ SCROLLBAR NEUMORPHIQUE ═══ -->
+    <Style x:Key="NeuScrollViewer" TargetType="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+    </Style>
+
+    <!-- ═══ STAT CARD (pour le dashboard) ═══ -->
+    <Style x:Key="NeuStatCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Padding" Value="20,16"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="16" ShadowDepth="6"
+                                  Direction="315" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ TOAST NOTIFICATION ═══ -->
+    <Style x:Key="NeuToast" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="20,14"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,20,20,0"/>
+        <Setter Property="MaxWidth" Value="380"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="24" ShadowDepth="8"
+                                  Direction="315" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══ CONVERTERS ═══ -->
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+</ResourceDictionary>

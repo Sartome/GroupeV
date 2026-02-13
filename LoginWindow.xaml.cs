@@ -4,120 +4,39 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 
 namespace GroupeV
 {
     /// <summary>
-    /// Fenêtre de connexion - Interface d'authentification pour les vendeurs
+    /// Fenêtre de connexion — Interface Neumorphic d'authentification pour les vendeurs
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private readonly Random _random = new();
-        
+        private int _loginAttempts;
+        private DateTime _lockoutUntil = DateTime.MinValue;
+        private const int MaxAttempts = 5;
+        private static readonly TimeSpan LockoutDuration = TimeSpan.FromMinutes(2);
+
         public LoginWindow()
         {
             InitializeComponent();
             EmailTextBox.Focus();
         }
 
-        /// <summary>
-        /// Animations au chargement de la fenêtre
-        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Créer des particules animées
-            CreateAnimatedParticles();
-            
-            // Animer l'entrée des éléments
             AnimateElementsIn();
         }
 
-        /// <summary>
-        /// Créer des particules animées en arrière-plan
-        /// </summary>
-        private void CreateAnimatedParticles()
-        {
-            for (int i = 0; i < 25; i++)
-            {
-                var particle = new Ellipse
-                {
-                    Width = _random.Next(3, 10),
-                    Height = _random.Next(3, 10),
-                    Fill = new SolidColorBrush(Color.FromArgb(
-                        (byte)_random.Next(50, 150),
-                        0,
-                        (byte)_random.Next(150, 255),
-                        0)),
-                    Opacity = 0.3
-                };
-
-                Canvas.SetLeft(particle, _random.Next(0, (int)this.Width));
-                Canvas.SetTop(particle, _random.Next(0, (int)this.Height));
-                
-                ParticlesCanvas.Children.Add(particle);
-
-                // Animation de déplacement
-                var moveY = new DoubleAnimation
-                {
-                    From = Canvas.GetTop(particle),
-                    To = _random.Next(0, (int)this.Height),
-                    Duration = TimeSpan.FromSeconds(_random.Next(5, 12)),
-                    RepeatBehavior = RepeatBehavior.Forever,
-                    AutoReverse = true
-                };
-
-                var moveX = new DoubleAnimation
-                {
-                    From = Canvas.GetLeft(particle),
-                    To = _random.Next(0, (int)this.Width),
-                    Duration = TimeSpan.FromSeconds(_random.Next(5, 12)),
-                    RepeatBehavior = RepeatBehavior.Forever,
-                    AutoReverse = true
-                };
-
-                // Animation d'opacité
-                var fade = new DoubleAnimation
-                {
-                    From = 0.1,
-                    To = 0.6,
-                    Duration = TimeSpan.FromSeconds(_random.Next(2, 4)),
-                    RepeatBehavior = RepeatBehavior.Forever,
-                    AutoReverse = true
-                };
-
-                particle.BeginAnimation(Canvas.TopProperty, moveY);
-                particle.BeginAnimation(Canvas.LeftProperty, moveX);
-                particle.BeginAnimation(OpacityProperty, fade);
-            }
-        }
-
-        /// <summary>
-        /// Animer l'entrée des éléments
-        /// </summary>
         private void AnimateElementsIn()
         {
-            // Animation du header
-            var headerFade = new DoubleAnimation
-            {
-                From = 0,
-                To = 1,
-                Duration = TimeSpan.FromSeconds(0.8),
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-            };
-            HeaderBorder.BeginAnimation(OpacityProperty, headerFade);
-
-            // Animation des champs avec délai
-            AnimateElementWithDelay(EmailPanel, 0.3);
-            AnimateElementWithDelay(PasswordPanel, 0.5);
-            AnimateElementWithDelay(LoginButton, 0.7);
+            AnimateElementWithDelay(EmailPanel, 0.2);
+            AnimateElementWithDelay(PasswordPanel, 0.35);
+            AnimateElementWithDelay(LoginButton, 0.5);
         }
 
-        /// <summary>
-        /// Animer un élément avec un délai
-        /// </summary>
         private async void AnimateElementWithDelay(FrameworkElement element, double delaySeconds)
         {
             element.Opacity = 0;
@@ -125,42 +44,51 @@ namespace GroupeV
 
             var fadeIn = new DoubleAnimation
             {
-                From = 0,
-                To = 1,
-                Duration = TimeSpan.FromSeconds(0.5)
+                From = 0, To = 1, Duration = TimeSpan.FromSeconds(0.5)
             };
-
             var slideIn = new DoubleAnimation
             {
-                From = 30,
-                To = 0,
-                Duration = TimeSpan.FromSeconds(0.5),
-                EasingFunction = new BackEase { EasingMode = EasingMode.EaseOut, Amplitude = 0.3 }
+                From = 24, To = 0, Duration = TimeSpan.FromSeconds(0.5),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
             element.BeginAnimation(OpacityProperty, fadeIn);
-            
             if (element.RenderTransform is TranslateTransform transform)
-            {
                 transform.BeginAnimation(TranslateTransform.YProperty, slideIn);
-            }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            // Anti brute-force : verrouillage temporaire
+            if (DateTime.Now < _lockoutUntil)
+            {
+                var remaining = (_lockoutUntil - DateTime.Now).TotalSeconds;
+                ShowStatus($"Trop de tentatives. Réessayez dans {remaining:F0}s", isError: true);
+                ShakeElement(StatusBorder);
+                return;
+            }
+
             var email = EmailTextBox.Text.Trim();
             var password = PasswordBox.Password;
 
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                ShowStatus("?? Veuillez entrer l'email et le mot de passe", isError: true);
+                ShowStatus("Veuillez entrer l'email et le mot de passe", isError: true);
+                ShakeElement(StatusBorder);
+                return;
+            }
+
+            // Validation du format email
+            if (!email.Contains('@') || !email.Contains('.') || email.Length > 255)
+            {
+                ShowStatus("Format d'adresse email invalide", isError: true);
                 ShakeElement(StatusBorder);
                 return;
             }
 
             var button = sender as Button;
             if (button != null) button.IsEnabled = false;
-            ShowStatus("?? Authentification en cours...", isError: false);
+            ShowStatus("Authentification en cours...", isError: false);
 
             #if DEBUG
             // En mode debug, exécuter les diagnostics en premier
@@ -169,7 +97,7 @@ namespace GroupeV
             
             if (!diagnostic.LoginSuccess)
             {
-                ShowStatus($"? {diagnostic.FailureReason}", isError: true);
+                ShowStatus($"{diagnostic.FailureReason}", isError: true);
                 ShakeElement(StatusBorder);
                 if (button != null) button.IsEnabled = true;
                 return;
@@ -182,7 +110,7 @@ namespace GroupeV
                 var connectionCheck = await DatabaseHelper.CheckConnectionAsync();
                 if (!connectionCheck.success)
                 {
-                    ShowStatus($"? Échec de la connexion à la base de données: {connectionCheck.message}", isError: true);
+                    ShowStatus($"Échec de la connexion à la base de données: {connectionCheck.message}", isError: true);
                     ShakeElement(StatusBorder);
                     return;
                 }
@@ -196,7 +124,10 @@ namespace GroupeV
 
                 if (user == null)
                 {
-                    ShowStatus("? Email ou mot de passe invalide", isError: true);
+                    _loginAttempts++;
+                    if (_loginAttempts >= MaxAttempts)
+                        _lockoutUntil = DateTime.Now.Add(LockoutDuration);
+                    ShowStatus("Email ou mot de passe invalide", isError: true);
                     ShakeElement(StatusBorder);
                     return;
                 }
@@ -208,7 +139,7 @@ namespace GroupeV
 
                 if (seller == null)
                 {
-                    ShowStatus("? Accès refusé. Compte vendeur requis.", isError: true);
+                    ShowStatus("Accès refusé. Compte vendeur requis.", isError: true);
                     ShakeElement(StatusBorder);
                     return;
                 }
@@ -216,23 +147,28 @@ namespace GroupeV
                 // Vérifier le mot de passe (supporte les mots de passe hachés: BCrypt, SHA-256, SHA-512, MD5, et texte brut)
                 if (!PasswordVerifier.VerifyPassword(password, user.MotDePasse))
                 {
+                    _loginAttempts++;
+                    if (_loginAttempts >= MaxAttempts)
+                        _lockoutUntil = DateTime.Now.Add(LockoutDuration);
                     #if DEBUG
                     var hashType = PasswordVerifier.GetHashTypeName(user.MotDePasse);
-                    ShowStatus($"? Échec de la vérification du mot de passe. Type de hachage: {hashType}", isError: true);
+                    ShowStatus($"Échec de la vérification du mot de passe. Type de hachage: {hashType}", isError: true);
                     System.Diagnostics.Debug.WriteLine($"[CONNEXION] Type de hachage du mot de passe: {hashType}");
                     #else
-                    ShowStatus("? Email ou mot de passe invalide", isError: true);
+                    ShowStatus("Email ou mot de passe invalide", isError: true);
                     #endif
                     ShakeElement(StatusBorder);
                     return;
                 }
 
-                // Tous les vendeurs ont accès - vérification de certification supprimée
-                ShowStatus("? Connexion réussie !", isError: false);
+                // Connexion réussie — réinitialiser le compteur
+                _loginAttempts = 0;
 
-                // Stocker l'utilisateur actuel en session
-                AuthenticationService.CurrentUser = user;
-                AuthenticationService.CurrentSeller = seller;
+                // Tous les vendeurs ont accès - vérification de certification supprimée
+                ShowStatus("Connexion réussie !", isError: false);
+
+                // Stocker l'utilisateur actuel en session sécurisée
+                AuthenticationService.SetSession(user, seller);
 
                 // Ouvrir la fenêtre principale
                 await System.Threading.Tasks.Task.Delay(500); // Brève pause pour afficher le succès
@@ -251,17 +187,17 @@ namespace GroupeV
                     1049 => "La base de données 'vente_groupe' n'existe pas. Veuillez créer la base de données en premier.",
                     _ => $"Erreur de base de données (Code {mysqlEx.Number}): {mysqlEx.Message}"
                 };
-                ShowStatus($"? {errorMessage}", isError: true);
+                ShowStatus(errorMessage, isError: true);
                 ShakeElement(StatusBorder);
             }
             catch (DbUpdateException dbEx)
             {
-                ShowStatus($"? Erreur de mise à jour de la base de données: {dbEx.InnerException?.Message ?? dbEx.Message}", isError: true);
+                ShowStatus($"Erreur de mise à jour de la base de données: {dbEx.InnerException?.Message ?? dbEx.Message}", isError: true);
                 ShakeElement(StatusBorder);
             }
             catch (Exception ex)
             {
-                ShowStatus($"? Erreur de connexion: {ex.Message}", isError: true);
+                ShowStatus($"Erreur de connexion: {ex.Message}", isError: true);
                 ShakeElement(StatusBorder);
             }
             finally
@@ -283,11 +219,11 @@ namespace GroupeV
             try
             {
                 var sellers = await LoginDiagnostics.ListAllSellersAsync();
-                MessageBox.Show(sellers, "Liste des vendeurs", MessageBoxButton.OK, MessageBoxImage.Information);
+                Controls.NeuDialog.ShowInfo(this, "Liste des vendeurs", sellers);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur de diagnostic", MessageBoxButton.OK, MessageBoxImage.Error);
+                Controls.NeuDialog.ShowError(this, "Erreur de diagnostic", ex.Message);
             }
         }
 
@@ -297,21 +233,13 @@ namespace GroupeV
         private void ShowStatus(string message, bool isError)
         {
             StatusTextBlock.Text = message;
-            StatusBorder.BorderBrush = isError ? 
-                System.Windows.Media.Brushes.Red : 
-                System.Windows.Media.Brushes.LimeGreen;
-            StatusTextBlock.Foreground = isError ? 
-                System.Windows.Media.Brushes.Red : 
-                System.Windows.Media.Brushes.LimeGreen;
+            var brush = isError
+                ? (SolidColorBrush)FindResource("NeuDangerBrush")
+                : (SolidColorBrush)FindResource("NeuSuccessBrush");
+            StatusTextBlock.Foreground = brush;
             StatusBorder.Visibility = Visibility.Visible;
 
-            // Animation d'apparition
-            var fadeIn = new DoubleAnimation
-            {
-                From = 0,
-                To = 1,
-                Duration = TimeSpan.FromSeconds(0.3)
-            };
+            var fadeIn = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromSeconds(0.3) };
             StatusBorder.BeginAnimation(OpacityProperty, fadeIn);
         }
 
@@ -336,20 +264,61 @@ namespace GroupeV
     }
 
     /// <summary>
-    /// Service d'authentification simple pour stocker la session utilisateur actuelle
-    /// En production, utilisez une gestion de session appropriée
+    /// Service d'authentification avec gestion de session sécurisée.
+    /// Timeout automatique après inactivité.
     /// </summary>
     public static class AuthenticationService
     {
+        private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(30);
+        private static DateTime _lastActivity = DateTime.MinValue;
+
         public static Utilisateur? CurrentUser { get; set; }
         public static Vendeur? CurrentSeller { get; set; }
 
-        public static bool IsAuthenticated => CurrentUser != null && CurrentSeller != null;
+        public static bool IsAuthenticated
+        {
+            get
+            {
+                if (CurrentUser == null || CurrentSeller == null)
+                    return false;
+
+                if (DateTime.Now - _lastActivity > SessionTimeout)
+                {
+                    Logout();
+                    return false;
+                }
+
+                _lastActivity = DateTime.Now;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Définit la session après une authentification réussie.
+        /// </summary>
+        public static void SetSession(Utilisateur user, Vendeur seller)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+            ArgumentNullException.ThrowIfNull(seller);
+            CurrentUser = user;
+            CurrentSeller = seller;
+            _lastActivity = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Rafraîchit le timer de session.
+        /// </summary>
+        public static void RefreshSession()
+        {
+            if (CurrentUser != null)
+                _lastActivity = DateTime.Now;
+        }
 
         public static void Logout()
         {
             CurrentUser = null;
             CurrentSeller = null;
+            _lastActivity = DateTime.MinValue;
         }
     }
 }

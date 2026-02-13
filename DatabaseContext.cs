@@ -19,7 +19,9 @@ namespace GroupeV
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = "Server=localhost;Uid=root;Pwd=;Database=vente_groupe;Connection Timeout=10;Default Command Timeout=30;";
+                // En production, stocker la chaîne de connexion dans une variable d'environnement
+                var connectionString = Environment.GetEnvironmentVariable("GROUPEV_CONNECTION_STRING")
+                    ?? "Server=localhost;Uid=root;Pwd=;Database=vente_groupe;Connection Timeout=10;Default Command Timeout=30;";
                 var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
 
                 optionsBuilder.UseMySql(connectionString, serverVersion, options =>
