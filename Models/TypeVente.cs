@@ -1,4 +1,4 @@
-namespace GroupeV;
+namespace GroupeV.Models;
 
 /// <summary>
 /// Type de vente pour un produit.
@@ -36,9 +36,9 @@ public static class TypeVenteExtensions
 
     public static string ToBadgeText(this TypeVente type) => type switch
     {
-        TypeVente.Standard => "Standard",
-        TypeVente.VenteGroupe => "Groupe",
-        TypeVente.Enchere => "Enchère",
-        _ => "Standard"
+        TypeVente.Standard    => "Achat direct",
+        TypeVente.VenteGroupe => "Vente groupée",
+        TypeVente.Enchere     => "Enchère",
+        _                     => "Standard"
     };
 }

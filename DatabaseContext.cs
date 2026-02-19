@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using GroupeV.Models;
 
 namespace GroupeV
 {
@@ -14,6 +15,8 @@ namespace GroupeV
         public DbSet<Produit> Produits { get; set; }
         public DbSet<Categorie> Categories { get; set; }
         public DbSet<Prevente> Preventes { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<TicketMessage> TicketMessages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -103,6 +106,12 @@ namespace GroupeV
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.Prix).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.PrixHt).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.TauxTva).HasColumnType("decimal(5,2)").HasDefaultValue(20.00m);
+                entity.Property(e => e.Quantity).HasDefaultValue(1);
+                entity.Property(e => e.SaleType).HasColumnName("sale_type").HasDefaultValue("buy");
+                entity.Property(e => e.GroupRequiredBuyers).HasColumnName("group_required_buyers");
+                entity.Property(e => e.GroupExpiresAt).HasColumnName("group_expires_at");
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.UpdatedAt)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -129,6 +138,38 @@ namespace GroupeV
                 entity.Property(e => e.UpdatedAt)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+            });
+
+            // Ticket configuration
+            modelBuilder.Entity<Ticket>(entity =>
+            {
+                entity.ToTable("ticket");
+                entity.HasKey(e => e.IdTicket);
+                entity.Property(e => e.Statut).HasDefaultValue("ouvert");
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(e => e.UpdatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+                entity.HasOne(e => e.Vendeur)
+                    .WithMany()
+                    .HasForeignKey(e => e.IdVendeur)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // TicketMessage configuration
+            modelBuilder.Entity<TicketMessage>(entity =>
+            {
+                entity.ToTable("ticket_message");
+                entity.HasKey(e => e.IdMessage);
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.HasOne(e => e.Vendeur)
+                    .WithMany()
+                    .HasForeignKey(e => e.IdVendeur)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne<Ticket>()
+                    .WithMany(t => t.Messages)
+                    .HasForeignKey(e => e.IdTicket)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

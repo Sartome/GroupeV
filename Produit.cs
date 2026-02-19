@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GroupeV.Models;
 
 namespace GroupeV
 {
@@ -44,8 +45,39 @@ namespace GroupeV
         [Column("id_categorie")]
         public int? IdCategorie { get; set; }
 
-        [Column("type_vente")]
-        public int TypeVente { get; set; } = 0; // 0=Standard, 1=VenteGroupe, 2=Enchere
+        [Column("quantity")]
+        public int Quantity { get; set; } = 1;
+
+        [Column("prix_ht")]
+        public decimal? PrixHt { get; set; }
+
+        [Column("taux_tva")]
+        public decimal TauxTva { get; set; } = 20.00m;
+
+        [Column("sale_type")]
+        public string SaleType { get; set; } = "buy";
+
+        /// <summary>
+        /// Integer representation used by the UI (0=buy, 1=group, 2=auction).
+        /// </summary>
+        [NotMapped]
+        public int TypeVente
+        {
+            get => SaleType switch { "buy" => 0, "group" => 1, "auction" => 2, _ => 0 };
+            set => SaleType = value switch { 0 => "buy", 1 => "group", 2 => "auction", _ => "buy" };
+        }
+
+        /// <summary>
+        /// Minimum number of buyers required for a group sale.
+        /// </summary>
+        [Column("group_required_buyers")]
+        public int? GroupRequiredBuyers { get; set; }
+
+        /// <summary>
+        /// Expiry datetime — auction end time or group sale deadline.
+        /// </summary>
+        [Column("group_expires_at")]
+        public DateTime? GroupExpiresAt { get; set; }
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
@@ -63,6 +95,15 @@ namespace GroupeV
         // Calculated properties
         [NotMapped]
         public string PrixFormate => Prix.HasValue ? $"{Prix.Value:N2} €" : "N/A";
+
+        [NotMapped]
+        public string PrixHtFormate => PrixHt.HasValue ? $"{PrixHt.Value:N2} € HT" : "N/A";
+
+        [NotMapped]
+        public string StockBadge => Quantity > 5 ? "En stock" : Quantity > 0 ? "Stock faible" : "Rupture";
+
+        [NotMapped]
+        public bool IsInStock => Quantity > 0;
 
         [NotMapped]
         public string CategorieNom => Categorie?.Libelle ?? "Sans catégorie";

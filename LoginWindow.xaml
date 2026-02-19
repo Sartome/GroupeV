@@ -23,9 +23,9 @@
     </Window.Resources>
 
     <!-- Outer neumorphic border -->
-    <Border CornerRadius="28" Background="{StaticResource NeuBackgroundBrush}" Padding="0">
+    <Border CornerRadius="22" Background="{StaticResource NeuBackgroundBrush}" Padding="0">
         <Border.Effect>
-            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="40" ShadowDepth="12" Direction="315" Opacity="0.45"/>
+            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="30" ShadowDepth="8" Direction="315" Opacity="0.2"/>
         </Border.Effect>
 
         <Grid>
@@ -36,25 +36,25 @@
             </Grid.RowDefinitions>
 
             <!-- HEADER -->
-            <Border Grid.Row="0" Padding="32,36,32,20">
+            <Border Grid.Row="0" Padding="32,32,32,16">
                 <StackPanel HorizontalAlignment="Center">
-                    <Border Style="{StaticResource NeuStatCard}" CornerRadius="28" Width="80" Height="80"
-                            Padding="0" HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <TextBlock Text="€" FontSize="42" FontWeight="Bold" 
+                    <Border Style="{StaticResource NeuStatCard}" CornerRadius="22" Width="72" Height="72"
+                            Padding="0" HorizontalAlignment="Center" Margin="0,0,0,18">
+                        <TextBlock Text="€" FontSize="36" FontWeight="Bold" 
                                    Foreground="{StaticResource NeuAccentBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
 
                     <TextBlock x:Name="TitleText" Text="Terminal Vendeur" 
                                FontFamily="{StaticResource NeuFontFamily}"
-                               FontSize="28" FontWeight="Bold"
+                               FontSize="24" FontWeight="Bold"
                                Foreground="{StaticResource NeuTextPrimaryBrush}" 
                                HorizontalAlignment="Center"/>
 
                     <TextBlock Text="Système de contrôle d'accès" 
                                FontFamily="{StaticResource NeuFontFamily}"
-                               FontSize="13" Foreground="{StaticResource NeuTextSecondaryBrush}" 
-                               HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                               FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}" 
+                               HorizontalAlignment="Center" Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
 
@@ -83,7 +83,7 @@
                     </StackPanel>
 
                     <!-- Password Field -->
-                    <StackPanel x:Name="PasswordPanel" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,28">
+                    <StackPanel x:Name="PasswordPanel" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,18">
                         <StackPanel.RenderTransform>
                             <TranslateTransform/>
                         </StackPanel.RenderTransform>
@@ -94,11 +94,24 @@
                         <PasswordBox x:Name="PasswordBox" Style="{StaticResource NeuPasswordBox}" MaxLength="128"/>
                     </StackPanel>
 
+                    <!-- Stay connected -->
+                    <StackPanel x:Name="RememberMePanel" Orientation="Horizontal" Margin="4,0,0,22"
+                                RenderTransformOrigin="0.5,0.5">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform/>
+                        </StackPanel.RenderTransform>
+                        <CheckBox x:Name="StayConnectedCheckBox" Style="{StaticResource NeuCheckBox}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Rester connecté" FontFamily="{StaticResource NeuFontFamily}"
+                                   FontSize="13" Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </StackPanel>
+
                     <!-- Login Button -->
-                    <Button x:Name="LoginButton" Content="Connexion" 
+                    <Button x:Name="LoginButton" Content="🔑  Connexion" 
                             Style="{StaticResource NeuButtonAccent}"
                             Click="LoginButton_Click"
-                            Height="50" FontSize="16"
+                            Height="46" FontSize="15"
                             Margin="0,0,0,16"
                             RenderTransformOrigin="0.5,0.5">
                         <Button.RenderTransform>

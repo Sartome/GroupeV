@@ -1,0 +1,53 @@
+<Window x:Class="GroupeV.NewTicketDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nouveau ticket"
+        Width="440" Height="340"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Background="{StaticResource NeuBackgroundBrush}">
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="➕  Nouveau ticket" FontFamily="{StaticResource NeuFontFamily}"
+                       FontSize="18" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}"/>
+            <TextBlock Text="Décrivez votre demande d'assistance" FontFamily="{StaticResource NeuFontFamily}"
+                       FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Titre" FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
+                       FontWeight="SemiBold" Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="4,0,0,6"/>
+            <TextBox x:Name="TitreBox" Style="{StaticResource NeuTextBox}" MaxLength="255" Margin="0,0,0,16"/>
+
+            <TextBlock Text="Description (message initial)" FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
+                       FontWeight="SemiBold" Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="4,0,0,6"/>
+            <TextBox x:Name="DescriptionBox" Style="{StaticResource NeuTextBox}" Height="80"
+                     MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Annuler" Style="{StaticResource NeuButton}"
+                    Height="40" FontSize="13" Click="Cancel_Click"/>
+            <Button Grid.Column="2" Content="Créer le ticket" Style="{StaticResource NeuButtonAccent}"
+                    Height="40" FontSize="13" Click="Create_Click"/>
+        </Grid>
+    </Grid>
+</Window>
+
+    
+    
+    
+    
+    

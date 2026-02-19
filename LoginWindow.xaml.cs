@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -19,6 +21,11 @@ namespace GroupeV
         private const int MaxAttempts = 5;
         private static readonly TimeSpan LockoutDuration = TimeSpan.FromMinutes(2);
 
+        private static readonly string SettingsDir =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GroupeV");
+        private static readonly string SettingsFile =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GroupeV", "remember.json");
+
         public LoginWindow()
         {
             InitializeComponent();
@@ -27,6 +34,7 @@ namespace GroupeV
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadRememberedEmail();
             AnimateElementsIn();
         }
 
@@ -34,7 +42,8 @@ namespace GroupeV
         {
             AnimateElementWithDelay(EmailPanel, 0.2);
             AnimateElementWithDelay(PasswordPanel, 0.35);
-            AnimateElementWithDelay(LoginButton, 0.5);
+            AnimateElementWithDelay(RememberMePanel, 0.45);
+            AnimateElementWithDelay(LoginButton, 0.55);
         }
 
         private async void AnimateElementWithDelay(FrameworkElement element, double delaySeconds)
@@ -164,6 +173,11 @@ namespace GroupeV
                 // Connexion réussie — réinitialiser le compteur
                 _loginAttempts = 0;
 
+                // Gérer "Rester connecté"
+                if (StayConnectedCheckBox.IsChecked == true)
+                    SaveRememberedEmail(email);
+                else
+                    ClearRememberedEmail();
                 // Tous les vendeurs ont accès - vérification de certification supprimée
                 ShowStatus("Connexion réussie !", isError: false);
 
@@ -209,6 +223,43 @@ namespace GroupeV
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void LoadRememberedEmail()
+        {
+            if (!File.Exists(SettingsFile)) return;
+            try
+            {
+                var json = File.ReadAllText(SettingsFile);
+                var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("email", out var emailProp))
+                {
+                    var saved = emailProp.GetString();
+                    if (!string.IsNullOrWhiteSpace(saved))
+                    {
+                        EmailTextBox.Text = saved;
+                        StayConnectedCheckBox.IsChecked = true;
+                        PasswordBox.Focus();
+                    }
+                }
+            }
+            catch { /* Ignore corrupted settings */ }
+        }
+
+        private void SaveRememberedEmail(string email)
+        {
+            try
+            {
+                Directory.CreateDirectory(SettingsDir);
+                File.WriteAllText(SettingsFile, JsonSerializer.Serialize(new { email }));
+            }
+            catch { /* Ignore */ }
+        }
+
+        private void ClearRememberedEmail()
+        {
+            try { if (File.Exists(SettingsFile)) File.Delete(SettingsFile); }
+            catch { /* Ignore */ }
         }
 
         /// <summary>

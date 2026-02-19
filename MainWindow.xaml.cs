@@ -55,9 +55,9 @@ namespace GroupeV
             try
             {
                 // Couleur d'accent neumorphic pour les charts
-                var accentColor = SKColor.Parse("#6C63FF");
-                var accentColor2 = SKColor.Parse("#ED8936");
-                var labelColor = SKColor.Parse("#718096");
+                var accentColor = SKColor.Parse("#6366F1");
+                var accentColor2 = SKColor.Parse("#F59E0B");
+                var labelColor = SKColor.Parse("#64748B");
 
                 // 1. Camembert catégories
                 var categoriesGrouped = products
@@ -66,14 +66,14 @@ namespace GroupeV
                     .OrderByDescending(x => x.Count)
                     .ToList();
 
-                CategoriesPieChart.Series = categoriesGrouped.Select(c => new PieSeries<int>
+                CategoriesPieChart.Series = [.. categoriesGrouped.Select(c => new PieSeries<int>
                 {
                     Values = [c.Count],
                     Name = $"{c.Category} ({c.Count})",
                     DataLabelsPaint = new SolidColorPaint(SKColors.White),
                     DataLabelsSize = 11,
                     DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle
-                }).ToArray();
+                })];
 
                 // 2. Prix moyens par catégorie
                 var prixMoyens = products
@@ -84,23 +84,23 @@ namespace GroupeV
                     .Take(10)
                     .ToList();
 
-                PrixMoyensChart.Series = new ISeries[]
-                {
+                PrixMoyensChart.Series =
+                [
                     new ColumnSeries<double>
                     {
-                        Values = prixMoyens.Select(c => c.AvgPrice).ToArray(),
-                        Name = "Prix Moyen (DH)",
+                        Values = [.. prixMoyens.Select(c => c.AvgPrice)],
+                        Name = "Prix Moyen (€)",
                         Fill = new SolidColorPaint(accentColor2),
                         DataLabelsPaint = new SolidColorPaint(labelColor),
                         DataLabelsSize = 10,
-                        DataLabelsFormatter = point => $"{point.PrimaryValue:F2} €"
+                        DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue:F2} €"
                     }
-                };
+                ];
                 PrixMoyensChart.XAxes =
                 [
                     new Axis
                     {
-                        Labels = prixMoyens.Select(c => c.Category.Length > 12 ? c.Category[..9] + "..." : c.Category).ToArray(),
+                        Labels = [.. prixMoyens.Select(c => c.Category.Length > 12 ? c.Category[..9] + "..." : c.Category)],
                         LabelsRotation = 45,
                         TextSize = 10,
                         LabelsPaint = new SolidColorPaint(labelColor)
@@ -168,11 +168,11 @@ namespace GroupeV
 
         private static Color GetHeatmapColor(double intensity)
         {
-            if (intensity == 0) return Color.FromRgb(0xD5, 0xDA, 0xE2);
-            if (intensity < 0.2) return Color.FromRgb(0xC3, 0xCF, 0xF5);
-            if (intensity < 0.4) return Color.FromRgb(0xA7, 0xA1, 0xFF);
-            if (intensity < 0.6) return Color.FromRgb(0x8B, 0x83, 0xFF);
-            if (intensity < 0.8) return Color.FromRgb(0x6C, 0x63, 0xFF);
+            if (intensity == 0) return Color.FromRgb(0xE2, 0xE8, 0xF0);
+            if (intensity < 0.2) return Color.FromRgb(0xC7, 0xD2, 0xFE);
+            if (intensity < 0.4) return Color.FromRgb(0xA5, 0xB4, 0xFC);
+            if (intensity < 0.6) return Color.FromRgb(0x81, 0x8C, 0xF8);
+            if (intensity < 0.8) return Color.FromRgb(0x63, 0x66, 0xF1);
             return Color.FromRgb(0x4F, 0x46, 0xE5);
         }
 
@@ -304,6 +304,39 @@ namespace GroupeV
             FacturesTab.Visibility = Visibility.Visible;
             TabFacturesBtn.Style = (Style)FindResource("NeuButtonAccent");
             TabProduitsBtn.Style = (Style)FindResource("NeuButton");
+        }
+
+        // ========== PANEL TOGGLES ==========
+
+        private void ToggleLeft_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = LeftNavBorder.Visibility == Visibility.Visible;
+            LeftNavBorder.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+            LeftColDef.Width = isVisible ? new GridLength(0) : new GridLength(220);
+            ToggleLeftBtn.Content = isVisible ? "▶" : "◀";
+        }
+
+        private void ToggleRight_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = RightChartsScrollViewer.Visibility == Visibility.Visible;
+            RightChartsScrollViewer.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+            RightColDef.Width = isVisible ? new GridLength(0) : new GridLength(300);
+            ToggleRightBtn.Content = isVisible ? "◀" : "▶";
+        }
+
+        // ========== PROFILE & TICKETS ==========
+
+        private void EditProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var profileWindow = new EditProfileWindow { Owner = this };
+            if (profileWindow.ShowDialog() == true)
+                ViewModel.WelcomeMessage = AuthenticationService.CurrentUser?.NomComplet ?? "Bienvenue";
+        }
+
+        private void TicketsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ticketWindow = new TicketWindow { Owner = this };
+            ticketWindow.ShowDialog();
         }
     }
 }

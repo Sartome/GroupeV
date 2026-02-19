@@ -11,9 +11,9 @@
         AllowsTransparency="True"
         ShowInTaskbar="False">
 
-    <Border CornerRadius="22" Background="{StaticResource NeuBackgroundBrush}" Padding="0">
+    <Border CornerRadius="18" Background="{StaticResource NeuBackgroundBrush}" Padding="0">
         <Border.Effect>
-            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="36" ShadowDepth="10" Direction="315" Opacity="0.5"/>
+            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="24" ShadowDepth="6" Direction="315" Opacity="0.2"/>
         </Border.Effect>
 
         <StackPanel Margin="32,28,32,24">

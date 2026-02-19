@@ -61,6 +61,13 @@ internal sealed class DashboardViewModel : ViewModelBase
         set => SetProperty(ref _totalVendeurs, value);
     }
 
+    private int _totalStock;
+    public int TotalStock
+    {
+        get => _totalStock;
+        set => SetProperty(ref _totalStock, value);
+    }
+
     private string _activeSellerName = "CHARGEMENT...";
     public string ActiveSellerName
     {
@@ -89,7 +96,7 @@ internal sealed class DashboardViewModel : ViewModelBase
         set => SetProperty(ref _mostExpensiveProduct, value);
     }
 
-    private string _mostExpensivePrice = "0.00 DH";
+    private string _mostExpensivePrice = "0,00 €";
     public string MostExpensivePrice
     {
         get => _mostExpensivePrice;
@@ -103,14 +110,14 @@ internal sealed class DashboardViewModel : ViewModelBase
         set => SetProperty(ref _leastExpensiveProduct, value);
     }
 
-    private string _leastExpensivePrice = "0.00 DH";
+    private string _leastExpensivePrice = "0,00 €";
     public string LeastExpensivePrice
     {
         get => _leastExpensivePrice;
         set => SetProperty(ref _leastExpensivePrice, value);
     }
 
-    private string _averagePrice = "0.00 DH";
+    private string _averagePrice = "0,00 €";
     public string AveragePrice
     {
         get => _averagePrice;
@@ -238,6 +245,7 @@ internal sealed class DashboardViewModel : ViewModelBase
             TotalProduits = products.Count;
             TotalCategories = await context.Categories.CountAsync();
             TotalVendeurs = await context.Vendeurs.CountAsync();
+            TotalStock = products.Sum(p => p.Quantity);
 
             // Analytics
             var withPrice = products.Where(p => p.Prix.HasValue).ToList();
@@ -245,18 +253,18 @@ internal sealed class DashboardViewModel : ViewModelBase
             {
                 var most = withPrice.OrderByDescending(p => p.Prix).First();
                 MostExpensiveProduct = most.Description ?? "N/A";
-                MostExpensivePrice = $"{most.Prix:F2} DH";
+                MostExpensivePrice = $"{most.Prix:F2} €";
 
                 var least = withPrice.OrderBy(p => p.Prix).First();
                 LeastExpensiveProduct = least.Description ?? "N/A";
-                LeastExpensivePrice = $"{least.Prix:F2} DH";
+                LeastExpensivePrice = $"{least.Prix:F2} €";
 
-                AveragePrice = $"{withPrice.Average(p => (double)p.Prix!.Value):F2} DH";
+                AveragePrice = $"{withPrice.Average(p => (double)p.Prix!.Value):F2} €";
             }
 
-            RecordCount = $"{TotalProduits} produits chargés";
+            RecordCount = $"{TotalProduits} produits · {TotalStock} articles en stock";
             StatusMessage = "Système prêt — Toutes les données chargées avec succès";
-            QuickStats = $"Base de données: vente_groupe\nStatut: CONNECTÉ\nServeur: localhost:3306\n\nProduits: {TotalProduits}\nVendeurs: {TotalVendeurs}\nCatégories: {TotalCategories}";
+            QuickStats = $"Base de données: vente_groupe\nStatut: CONNECTÉ\nServeur: localhost:3306\n\nProduits: {TotalProduits}\nStock total: {TotalStock}\nVendeurs: {TotalVendeurs}\nCatégories: {TotalCategories}";
 
             if (AuthenticationService.CurrentUser != null)
             {

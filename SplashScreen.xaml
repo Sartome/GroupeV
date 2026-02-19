@@ -11,27 +11,27 @@
         AllowsTransparency="True"
         Loaded="Window_Loaded">
 
-    <Border CornerRadius="32" Background="{StaticResource NeuBackgroundBrush}">
+    <Border CornerRadius="24" Background="{StaticResource NeuBackgroundBrush}">
         <Border.Effect>
-            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="50" ShadowDepth="14" Direction="315" Opacity="0.45"/>
+            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="30" ShadowDepth="8" Direction="315" Opacity="0.2"/>
         </Border.Effect>
 
         <Grid>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
                 <!-- Neumorphic Logo -->
-                <Border Style="{StaticResource NeuStatCard}" CornerRadius="36" Width="120" Height="120"
-                        HorizontalAlignment="Center" Margin="0,0,0,32">
-                    <TextBlock Text="€" FontSize="60" FontWeight="Bold" 
+                <Border Style="{StaticResource NeuStatCard}" CornerRadius="28" Width="100" Height="100"
+                        HorizontalAlignment="Center" Margin="0,0,0,28">
+                    <TextBlock Text="€" FontSize="50" FontWeight="Bold" 
                                Foreground="{StaticResource NeuAccentBrush}"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
 
                 <TextBlock Text="GROUPE V" 
                            FontFamily="{StaticResource NeuFontFamily}"
-                           FontSize="42" FontWeight="Bold"
+                           FontSize="38" FontWeight="Bold"
                            Foreground="{StaticResource NeuTextPrimaryBrush}"
-                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                           HorizontalAlignment="Center" Margin="0,0,0,6"/>
 
                 <TextBlock Text="Système de vente intelligent" 
                            FontFamily="{StaticResource NeuFontFamily}"
