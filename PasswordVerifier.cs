@@ -44,11 +44,12 @@ namespace GroupeV
 
             return hashType switch
             {
-                HashType.BCrypt => VerifyBCrypt(enteredPassword, storedPassword),
-                HashType.Argon2id => VerifyArgon2(enteredPassword, storedPassword),
-                HashType.Argon2i => VerifyArgon2(enteredPassword, storedPassword),
+                HashType.BCrypt    => VerifyBCrypt(enteredPassword, storedPassword),
+                HashType.Argon2id  => VerifyArgon2(enteredPassword, storedPassword),
+                HashType.Argon2i   => VerifyArgon2(enteredPassword, storedPassword),
+                HashType.HexHash   => VerifyHexHash(enteredPassword, storedPassword),
                 HashType.PlainText => VerifyPlainText(enteredPassword, storedPassword),
-                _ => false
+                _                  => false
             };
         }
 
@@ -58,7 +59,7 @@ namespace GroupeV
         private static HashType DetectHashType(string storedPassword)
         {
             // BCrypt: starts with $2a$, $2b$, $2x$, $2y$ and is typically 60 chars
-            if (storedPassword.StartsWith("$2a$") || 
+            if (storedPassword.StartsWith("$2a$") ||
                 storedPassword.StartsWith("$2b$") ||
                 storedPassword.StartsWith("$2x$") ||
                 storedPassword.StartsWith("$2y$"))
@@ -68,17 +69,19 @@ namespace GroupeV
 
             // Argon2id: $argon2id$v=19$m=65536,t=4,p=1$...
             if (storedPassword.StartsWith("$argon2id$"))
-            {
                 return HashType.Argon2id;
-            }
 
             // Argon2i: $argon2i$v=19$m=65536,t=4,p=1$...
             if (storedPassword.StartsWith("$argon2i$"))
-            {
                 return HashType.Argon2i;
+
+            // Hex hashes: MD5 (32), SHA-256 (64), SHA-512 (128) — all lowercase hex
+            if ((storedPassword.Length == 32 || storedPassword.Length == 64 || storedPassword.Length == 128)
+                && storedPassword.All(c => c is (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F')))
+            {
+                return HashType.HexHash;
             }
 
-            // Default to plain text (development only)
             return HashType.PlainText;
         }
 
@@ -129,9 +132,10 @@ namespace GroupeV
                 var iterations = int.Parse(param_parts[1].Split('=')[1]); // t (time cost)
                 var parallelism = int.Parse(param_parts[2].Split('=')[1]); // p (parallelism)
 
-                // Decode salt and hash
-                var salt = Convert.FromBase64String(saltB64.Replace('.', '+').Replace('_', '/') + "==");
-                var expectedHash = Convert.FromBase64String(hashB64.Replace('.', '+').Replace('_', '/') + "==");
+                // Decode salt and hash — argon2 uses standard base64 ('+', '/') WITHOUT trailing '='
+                // Padding must be computed, never blindly appended.
+                var salt         = DecodeArgon2Base64(saltB64);
+                var expectedHash = DecodeArgon2Base64(hashB64);
 
                 // Compute hash with same parameters
                 byte[] computedHash;
@@ -180,6 +184,45 @@ namespace GroupeV
             return password == storedPassword;
         }
 
+        /// <summary>
+        /// Verify MD5 / SHA-256 / SHA-512 hex hashes (PHP hash('sha256',$p), md5($p), etc.)
+        /// </summary>
+        private static bool VerifyHexHash(string password, string storedHash)
+        {
+            try
+            {
+                byte[] computed = storedHash.Length switch
+                {
+                    32  => MD5.HashData(Encoding.UTF8.GetBytes(password)),
+                    64  => SHA256.HashData(Encoding.UTF8.GetBytes(password)),
+                    128 => SHA512.HashData(Encoding.UTF8.GetBytes(password)),
+                    _   => []
+                };
+
+                if (computed.Length == 0) return false;
+
+                var hex = Convert.ToHexString(computed).ToLowerInvariant();
+                return CryptographicOperations.FixedTimeEquals(
+                    Encoding.ASCII.GetBytes(hex),
+                    Encoding.ASCII.GetBytes(storedHash.ToLowerInvariant()));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[PASSWORD] Hex hash verification error: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Decode argon2 base64 — standard alphabet ('+', '/'), no trailing '=' in stored form.
+        /// Computes the exact required padding instead of blindly appending "==".
+        /// </summary>
+        private static byte[] DecodeArgon2Base64(string b64)
+        {
+            int padNeeded = (4 - b64.Length % 4) % 4;
+            return Convert.FromBase64String(b64 + new string('=', padNeeded));
+        }
+
         #endregion
 
         /// <summary>
@@ -193,11 +236,12 @@ namespace GroupeV
             var hashType = DetectHashType(storedPassword.Trim());
             return hashType switch
             {
-                HashType.BCrypt => "BCrypt (PHP PASSWORD_BCRYPT)",
-                HashType.Argon2id => "Argon2id (PHP password_hash)",
-                HashType.Argon2i => "Argon2i",
+                HashType.BCrypt    => "BCrypt (PHP PASSWORD_BCRYPT)",
+                HashType.Argon2id  => "Argon2id (PHP PASSWORD_ARGON2ID)",
+                HashType.Argon2i   => "Argon2i",
+                HashType.HexHash   => storedPassword.Trim().Length switch { 32 => "MD5", 64 => "SHA-256", _ => "SHA-512" },
                 HashType.PlainText => "Plain Text (Development Only)",
-                _ => "Unknown"
+                _                  => "Unknown"
             };
         }
 
@@ -264,7 +308,8 @@ namespace GroupeV
             PlainText,
             BCrypt,
             Argon2i,
-            Argon2id
+            Argon2id,
+            HexHash   // MD5 (32), SHA-256 (64), SHA-512 (128)
         }
     }
 
