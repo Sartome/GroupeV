@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
-using GroupeV.Utilities;
 
 namespace GroupeV
 {
@@ -21,42 +20,6 @@ namespace GroupeV
             // Démarrer avec l'écran de démarrage chaotique
             var splashScreen = new SplashScreen();
             splashScreen.Show();
-        }
-
-        /// <summary>
-        /// Optional startup database check
-        /// Uncomment the call in OnStartup to enable
-        /// </summary>
-        private async void CheckDatabaseConnectionAtStartup()
-        {
-            try
-            {
-                var (connected, message, stats) = await DatabaseTester.GetConnectionStatusAsync();
-                
-                if (!connected)
-                {
-                    var result = MessageBox.Show(
-                        $"Database connection failed:\n\n{message}\n\n" +
-                        "The application will start but some features may not work.\n\n" +
-                        "Would you like to see detailed diagnostics?",
-                        "Database Warning",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        await DatabaseTester.AfficherDiagnosticAsync();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"✓ Database connected: {stats?.ProductCount ?? 0} products available");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Startup database check failed: {ex.Message}");
-            }
         }
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

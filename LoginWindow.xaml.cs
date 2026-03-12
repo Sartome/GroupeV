@@ -263,22 +263,6 @@ namespace GroupeV
         }
 
         /// <summary>
-        /// Afficher les informations de diagnostic - pour déboguer les problèmes de connexion
-        /// </summary>
-        private async void ShowDiagnostics_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var sellers = await LoginDiagnostics.ListAllSellersAsync();
-                Controls.NeuDialog.ShowInfo(this, "Liste des vendeurs", sellers);
-            }
-            catch (Exception ex)
-            {
-                Controls.NeuDialog.ShowError(this, "Erreur de diagnostic", ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Afficher un message de statut avec animation
         /// </summary>
         private void ShowStatus(string message, bool isError)

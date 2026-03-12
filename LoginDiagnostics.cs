@@ -98,51 +98,6 @@ namespace GroupeV
 
             return result;
         }
-
-        /// <summary>
-        /// Lister tous les vendeurs dans la base de données avec leurs emails
-        /// </summary>
-        public static async Task<string> ListAllSellersAsync()
-        {
-            try
-            {
-                using var context = new DatabaseContext();
-                
-                var sellers = await context.Vendeurs
-                    .Include(v => v.Utilisateur)
-                    .Select(v => new
-                    {
-                        UserId = v.IdUser,
-                        Email = v.Utilisateur!.Email ?? "(pas d'email)",
-                        Name = v.Utilisateur.NomComplet,
-                        Company = v.NomEntreprise ?? "(pas d'entreprise)",
-                        Certified = v.IsCertified
-                    })
-                    .ToListAsync();
-
-                if (sellers.Count == 0)
-                {
-                    return "Aucun vendeur trouvé dans la base de données.";
-                }
-
-                var output = $"Trouvé {sellers.Count} vendeur(s):\n\n";
-                foreach (var s in sellers)
-                {
-                    var status = s.Certified ? "? Certifié" : "? Non certifié";
-                    output += $"• ID: {s.UserId}\n";
-                    output += $"  Email: {s.Email}\n";
-                    output += $"  Nom: {s.Name}\n";
-                    output += $"  Entreprise: {s.Company}\n";
-                    output += $"  Statut: {status}\n\n";
-                }
-
-                return output;
-            }
-            catch (Exception ex)
-            {
-                return $"Erreur lors de la liste des vendeurs: {ex.Message}";
-            }
-        }
     }
 
     /// <summary>
