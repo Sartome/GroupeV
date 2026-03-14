@@ -14,6 +14,10 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     ResizeMode="CanResize"
+    UseLayoutRounding="True"
+    TextOptions.TextFormattingMode="Display"
+    TextOptions.TextRenderingMode="ClearType"
+    SnapsToDevicePixels="True"
     Loaded="MainWindow_Loaded">
 
     <Window.DataContext>
@@ -217,12 +221,50 @@
                                 ToolTip="Masquer / Afficher le panneau gauche"/>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Button x:Name="TabProduitsBtn" Content="📦  Produits" 
-                                    Click="TabProduits_Click" Style="{StaticResource NeuButtonAccent}"
-                                    Height="30" FontSize="12" FontWeight="SemiBold" Margin="0,0,6,0" Padding="14,4"/>
-                            <Button x:Name="TabFacturesBtn" Content="👥  Préventes" 
-                                    Click="TabFactures_Click" Style="{StaticResource NeuButton}"
-                                    Height="30" FontSize="12" FontWeight="SemiBold" Padding="14,4"/>
+                            <Button x:Name="TabProduitsBtn" Content="📦  Produits"
+                                    Command="{Binding SwitchTabCommand}" CommandParameter="produits"
+                                    Height="30" FontSize="12" FontWeight="SemiBold" Margin="0,0,6,0" Padding="14,4"
+                                    AutomationProperties.Name="Onglet Produits">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource NeuButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsProduitsTabSelected}" Value="True">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
+                                                            <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button x:Name="TabFacturesBtn" Content="👥  Préventes"
+                                    Command="{Binding SwitchTabCommand}" CommandParameter="preventes"
+                                    Height="30" FontSize="12" FontWeight="SemiBold" Padding="14,4"
+                                    AutomationProperties.Name="Onglet Préventes">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource NeuButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsProduitsTabSelected}" Value="False">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
+                                                            <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </StackPanel>
 
                         <Button Grid.Column="2" x:Name="ToggleRightBtn" Content="▶"
@@ -231,21 +273,46 @@
                                 ToolTip="Masquer / Afficher le panneau droit"/>
                     </Grid>
 
-                    <!-- Search bar -->
-                    <TextBox Grid.Row="1" x:Name="SearchBox" Style="{StaticResource NeuTextBox}" 
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Height="36" FontSize="12" Margin="0,0,0,10"/>
+                    <!-- Search bar with watermark placeholder -->
+                    <!-- UX: Without placeholder text the user has no affordance cue about what this field
+                         filters. The overlay TextBlock is IsHitTestVisible=False so clicks pass through. -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <TextBox x:Name="SearchBox" Style="{StaticResource NeuTextBox}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="36" FontSize="12"
+                                 AutomationProperties.Name="Rechercher un produit"/>
+                        <TextBlock Text="🔍  Rechercher un produit, une catégorie, un prix..."
+                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                   VerticalAlignment="Center" Margin="16,0,0,0"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
 
                     <!-- PRODUITS TAB -->
-                    <Border Grid.Row="2" x:Name="ProduitsTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="10">
-                        <DataGrid x:Name="SalesDataGrid"
-                                  Style="{StaticResource NeuDataGrid}"
-                                  ItemsSource="{Binding FilteredProduits}"
-                                  SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-                                  ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
-                                  CellStyle="{StaticResource NeuDataGridCell}"
-                                  RowStyle="{StaticResource NeuDataGridRow}"
-                                  RowHeight="48">
+                    <Border Grid.Row="2" x:Name="ProduitsTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="10"
+                            Visibility="{Binding IsProduitsTabSelected, Converter={StaticResource BoolToVis}}">
+                        <Grid>
+                            <DataGrid x:Name="SalesDataGrid"
+                                      Style="{StaticResource NeuDataGrid}"
+                                      ItemsSource="{Binding FilteredProduits}"
+                                      SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                      ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
+                                      CellStyle="{StaticResource NeuDataGridCell}"
+                                      RowStyle="{StaticResource NeuDataGridRow}"
+                                      RowHeight="48"
+                                      MouseDoubleClick="SalesDataGrid_MouseDoubleClick"
+                                      AutomationProperties.Name="Liste des produits">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding IdProduit}" Width="50"/>
                                 <DataGridTemplateColumn Header="Image" Width="56">
@@ -253,7 +320,8 @@
                                         <DataTemplate>
                                             <Border Width="36" Height="36" CornerRadius="8" 
                                                     Background="{StaticResource NeuDividerBrush}" ClipToBounds="True">
-                                                <Image Source="{Binding ImageAbsolutePath}" Stretch="UniformToFill"
+                                                <Image Source="{Binding ImageAbsolutePath, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
+                                                       Stretch="UniformToFill"
                                                        RenderOptions.BitmapScalingMode="HighQuality"/>
                                             </Border>
                                         </DataTemplate>
@@ -321,11 +389,38 @@
                                 <DataGridTextColumn Header="Créé le" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="85"/>
                             </DataGrid.Columns>
                         </DataGrid>
+
+                        <!-- UX: Empty state — shown when FilteredProduits is empty (no products yet, or search
+                             returned 0 results). Gives the user context and a clear next action. -->
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1"
+                                    Visibility="{Binding IsProductListEmpty, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="📦" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                            <TextBlock Text="Aucun produit trouvé"
+                                       FontFamily="{StaticResource NeuFontFamily}" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
+                                       Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                       HorizontalAlignment="Center" Margin="0,6,0,0" TextAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <!-- Default: active search filter returned nothing -->
+                                        <Setter Property="Text" Value="Aucun résultat pour cette recherche. Essayez d'autres mots-clés."/>
+                                        <Style.Triggers>
+                                            <!-- No filter: seller has no products yet -->
+                                            <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                <Setter Property="Text" Value="Cliquez sur ➕ Ajouter Produit pour commencer"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                     </Border>
 
                     <!-- PRÉVENTES TAB -->
                     <Border Grid.Row="2" x:Name="FacturesTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="10"
-                            Visibility="Collapsed">
+                            Visibility="{Binding IsPreventesTabSelected, Converter={StaticResource BoolToVis}}">
                         <DataGrid Style="{StaticResource NeuDataGrid}"
                                   ItemsSource="{Binding Factures}"
                                   ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
@@ -423,12 +518,84 @@
             </Grid>
         </Border>
 
+        <!-- ═══ LOADING OVERLAY ═══ -->
+        <!-- UX: Covers the entire window during async data loads (IsLoading=True), preventing accidental
+             interaction with stale data and giving clear perceived-performance feedback. ZIndex 200
+             sits above the toast (100) so loading always wins visual priority. -->
+        <Grid Grid.RowSpan="4" Panel.ZIndex="200"
+              Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+            <Grid.Background>
+                <SolidColorBrush Color="{StaticResource NeuBackground}" Opacity="0.82"/>
+            </Grid.Background>
+            <Border Style="{StaticResource NeuCard}" Padding="40,32"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" MinWidth="220">
+                    <ProgressBar Style="{StaticResource NeuProgressBarIndeterminate}"
+                                 IsIndeterminate="True" Width="200" Margin="0,0,0,18"/>
+                    <TextBlock Text="Chargement en cours..."
+                               FontFamily="{StaticResource NeuFontFamily}" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource NeuTextPrimaryBrush}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontFamily="{StaticResource NeuFontFamily}" FontSize="11"
+                               Foreground="{StaticResource NeuTextSecondaryBrush}"
+                               HorizontalAlignment="Center" Margin="0,6,0,0"
+                               TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
         <!-- ═══ TOAST NOTIFICATION OVERLAY ═══ -->
+        <!-- UX: Left accent strip + icon provide instant success/error recognition without reading text.
+             DataTriggers on IsToastError swap the strip and icon between green (success) and red (error). -->
         <Border Grid.RowSpan="4" Style="{StaticResource NeuToast}"
                 Visibility="{Binding IsToastVisible, Converter={StaticResource BoolToVis}}"
                 Panel.ZIndex="100">
-            <TextBlock Text="{Binding ToastMessage}" FontFamily="{StaticResource NeuFontFamily}" FontSize="13"
-                       Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" MaxWidth="320"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left accent strip: green = success, red = error -->
+                <Border Grid.Column="0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource NeuSuccessBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsToastError}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource NeuDangerBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <!-- Status icon -->
+                <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="12,0,4,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="✓"/>
+                            <Setter Property="Foreground" Value="{StaticResource NeuSuccessBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsToastError}" Value="True">
+                                    <Setter Property="Text" Value="✕"/>
+                                    <Setter Property="Foreground" Value="{StaticResource NeuDangerBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Message -->
+                <TextBlock Grid.Column="2" Text="{Binding ToastMessage}"
+                           FontFamily="{StaticResource NeuFontFamily}" FontSize="13"
+                           Foreground="{StaticResource NeuTextPrimaryBrush}"
+                           TextWrapping="Wrap" VerticalAlignment="Center"
+                           Margin="0,12,16,12"/>
+            </Grid>
         </Border>
     </Grid>
 </Window>

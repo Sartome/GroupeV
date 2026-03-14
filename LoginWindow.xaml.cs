@@ -20,6 +20,7 @@ namespace GroupeV
         private DateTime _lockoutUntil = DateTime.MinValue;
         private const int MaxAttempts = 5;
         private static readonly TimeSpan LockoutDuration = TimeSpan.FromMinutes(2);
+        private bool _isPasswordRevealed;
 
         private static readonly string SettingsDir =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GroupeV");
@@ -78,7 +79,7 @@ namespace GroupeV
             }
 
             var email = EmailTextBox.Text.Trim();
-            var password = PasswordBox.Password;
+            var password = _isPasswordRevealed ? PasswordRevealBox.Text : PasswordBox.Password;
 
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
@@ -276,6 +277,31 @@ namespace GroupeV
 
             var fadeIn = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromSeconds(0.3) };
             StatusBorder.BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        /// <summary>
+        /// Toggle between PasswordBox (masked) and TextBox (revealed).
+        /// </summary>
+        private void TogglePassword_Click(object sender, RoutedEventArgs e)
+        {
+            _isPasswordRevealed = !_isPasswordRevealed;
+            if (_isPasswordRevealed)
+            {
+                PasswordRevealBox.Text = PasswordBox.Password;
+                PasswordBox.Visibility = Visibility.Collapsed;
+                PasswordRevealBox.Visibility = Visibility.Visible;
+                PasswordRevealBox.Focus();
+                PasswordRevealBox.CaretIndex = PasswordRevealBox.Text.Length;
+                TogglePasswordBtn.Content = "??";
+            }
+            else
+            {
+                PasswordBox.Password = PasswordRevealBox.Text;
+                PasswordRevealBox.Visibility = Visibility.Collapsed;
+                PasswordBox.Visibility = Visibility.Visible;
+                PasswordBox.Focus();
+                TogglePasswordBtn.Content = "??";
+            }
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace GroupeV
     /// <summary>
     /// Pre-sale entity
     /// </summary>
-    [Table("prevente")]
+    [Table("Prevente")]
     public class Prevente
     {
         [Key]

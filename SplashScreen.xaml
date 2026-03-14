@@ -9,9 +9,13 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
+        UseLayoutRounding="True"
         Loaded="Window_Loaded">
 
-    <Border CornerRadius="24" Background="{StaticResource NeuBackgroundBrush}">
+    <Border CornerRadius="24" Background="{StaticResource NeuBackgroundBrush}"
+            TextOptions.TextFormattingMode="Display"
+            TextOptions.TextRenderingMode="ClearType"
+            SnapsToDevicePixels="True">
         <Border.Effect>
             <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="30" ShadowDepth="8" Direction="315" Opacity="0.2"/>
         </Border.Effect>

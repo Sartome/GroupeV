@@ -47,19 +47,19 @@ namespace GroupeV.Utilities
                 Console.WriteLine("? Verifying tables...");
 
                 int nombreUtilisateurs = await context.Utilisateurs.CountAsync();
-                Console.WriteLine($"? Table 'utilisateur' accessible. Count: {nombreUtilisateurs}");
+                Console.WriteLine($"? Table 'Utilisateur' accessible. Count: {nombreUtilisateurs}");
 
                 int nombreVendeurs = await context.Vendeurs.CountAsync();
-                Console.WriteLine($"? Table 'vendeur' accessible. Count: {nombreVendeurs}");
+                Console.WriteLine($"? Table 'Vendeur' accessible. Count: {nombreVendeurs}");
 
                 int nombreProduits = await context.Produits.CountAsync();
-                Console.WriteLine($"? Table 'produit' accessible. Count: {nombreProduits}");
+                Console.WriteLine($"? Table 'Produit' accessible. Count: {nombreProduits}");
 
                 int nombreCategories = await context.Categories.CountAsync();
-                Console.WriteLine($"? Table 'categorie' accessible. Count: {nombreCategories}");
+                Console.WriteLine($"? Table 'Categorie' accessible. Count: {nombreCategories}");
 
                 int nombrePreventes = await context.Preventes.CountAsync();
-                Console.WriteLine($"? Table 'prevente' accessible. Count: {nombrePreventes}");
+                Console.WriteLine($"? Table 'Prevente' accessible. Count: {nombrePreventes}");
 
                 // ========== TEST 3: Relationships ==========
                 Console.WriteLine("? Testing relationships (Include)...");
@@ -215,11 +215,11 @@ namespace GroupeV.Utilities
                     
                     // Table counts
                     diagnostic += "Table Statistics:\n";
-                    diagnostic += $"• utilisateur: {await context.Utilisateurs.CountAsync()}\n";
-                    diagnostic += $"• vendeur: {await context.Vendeurs.CountAsync()}\n";
-                    diagnostic += $"• produit: {await context.Produits.CountAsync()}\n";
-                    diagnostic += $"• categorie: {await context.Categories.CountAsync()}\n";
-                    diagnostic += $"• prevente: {await context.Preventes.CountAsync()}\n";
+                    diagnostic += $"• Utilisateur: {await context.Utilisateurs.CountAsync()}\n";
+                    diagnostic += $"• Vendeur: {await context.Vendeurs.CountAsync()}\n";
+                    diagnostic += $"• Produit: {await context.Produits.CountAsync()}\n";
+                    diagnostic += $"• Categorie: {await context.Categories.CountAsync()}\n";
+                    diagnostic += $"• Prevente: {await context.Preventes.CountAsync()}\n";
                 }
 
                 Console.WriteLine(diagnostic);

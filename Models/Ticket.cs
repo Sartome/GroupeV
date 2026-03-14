@@ -8,7 +8,7 @@ namespace GroupeV.Models
     /// <summary>
     /// Support ticket created by a seller.
     /// </summary>
-    [Table("ticket")]
+    [Table("seller_ticket")]
     public class Ticket
     {
         [Key]

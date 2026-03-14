@@ -8,7 +8,7 @@ namespace GroupeV
     /// <summary>
     /// Product entity for sellers
     /// </summary>
-    [Table("produit")]
+    [Table("Produit")]
     public class Produit
     {
         [Key]

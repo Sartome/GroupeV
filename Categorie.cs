@@ -7,7 +7,7 @@ namespace GroupeV
     /// <summary>
     /// Product category entity
     /// </summary>
-    [Table("categorie")]
+    [Table("Categorie")]
     public class Categorie
     {
         [Key]

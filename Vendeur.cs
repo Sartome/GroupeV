@@ -7,7 +7,7 @@ namespace GroupeV
     /// <summary>
     /// Seller entity - inherits from utilisateur
     /// </summary>
-    [Table("vendeur")]
+    [Table("Vendeur")]
     public class Vendeur
     {
         [Key]

@@ -160,6 +160,27 @@ internal sealed class DashboardViewModel : ViewModelBase
         set => SetProperty(ref _isToastError, value);
     }
 
+    private bool _isProductListEmpty;
+    public bool IsProductListEmpty
+    {
+        get => _isProductListEmpty;
+        set => SetProperty(ref _isProductListEmpty, value);
+    }
+
+    private bool _isProduitsTabSelected = true;
+    public bool IsProduitsTabSelected
+    {
+        get => _isProduitsTabSelected;
+        set
+        {
+            if (SetProperty(ref _isProduitsTabSelected, value))
+                OnPropertyChanged(nameof(IsPreventesTabSelected));
+        }
+    }
+
+    /// <summary>Computed inverse — bound to FacturesTab Visibility via BoolToVis.</summary>
+    public bool IsPreventesTabSelected => !IsProduitsTabSelected;
+
     private string _searchText = string.Empty;
     public string SearchText
     {
@@ -176,6 +197,7 @@ internal sealed class DashboardViewModel : ViewModelBase
     public ICommand LoadDataCommand { get; }
     public ICommand TestConnectionCommand { get; }
     public ICommand LogoutCommand { get; }
+    public ICommand SwitchTabCommand { get; }
 
     // ========== CONSTRUCTEUR ==========
 
@@ -184,6 +206,7 @@ internal sealed class DashboardViewModel : ViewModelBase
         LoadDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
         TestConnectionCommand = new AsyncRelayCommand(TestConnectionAsync);
         LogoutCommand = new RelayCommand(Logout);
+        SwitchTabCommand = new RelayCommand(tab => IsProduitsTabSelected = tab as string == "produits");
     }
 
     // ========== MÉTHODES ASYNC ==========
@@ -350,6 +373,8 @@ internal sealed class DashboardViewModel : ViewModelBase
 
         foreach (var p in query)
             FilteredProduits.Add(p);
+
+        IsProductListEmpty = FilteredProduits.Count == 0;
     }
 
     /// <summary>

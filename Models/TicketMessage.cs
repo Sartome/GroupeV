@@ -7,7 +7,7 @@ namespace GroupeV.Models
     /// <summary>
     /// A message inside a support ticket conversation.
     /// </summary>
-    [Table("ticket_message")]
+    [Table("seller_ticket_message")]
     public class TicketMessage
     {
         [Key]

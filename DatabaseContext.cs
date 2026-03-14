@@ -4,8 +4,8 @@ using GroupeV.Models;
 namespace GroupeV
 {
     /// <summary>
-    /// Database context for vente_groupe database
-    /// Configured for seller-focused heavy client application
+    /// Database context for the sellandbuy DDEV database.
+    /// Configured for seller-focused heavy client application.
     /// </summary>
     public class DatabaseContext : DbContext
     {
@@ -22,10 +22,9 @@ namespace GroupeV
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // En production, stocker la chaîne de connexion dans une variable d'environnement
-                var connectionString = Environment.GetEnvironmentVariable("GROUPEV_CONNECTION_STRING")
-                    ?? "Server=localhost;Uid=root;Pwd=;Database=vente_groupe;Connection Timeout=10;Default Command Timeout=30;";
-                var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
+                // Utiliser la chaîne de connexion commune
+                var connectionString = DatabaseHelper.ConnectionString;
+                var serverVersion = new MariaDbServerVersion(new Version(11, 8));
 
                 optionsBuilder.UseMySql(connectionString, serverVersion, options =>
                 {
@@ -52,7 +51,7 @@ namespace GroupeV
             // Utilisateur configuration
             modelBuilder.Entity<Utilisateur>(entity =>
             {
-                entity.ToTable("utilisateur");
+                entity.ToTable("Utilisateur");
                 entity.HasKey(e => e.IdUser);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.UpdatedAt)
@@ -63,7 +62,7 @@ namespace GroupeV
             // Vendeur configuration
             modelBuilder.Entity<Vendeur>(entity =>
             {
-                entity.ToTable("vendeur");
+                entity.ToTable("Vendeur");
                 entity.HasKey(e => e.IdUser);
                 
                 entity.HasOne(e => e.Utilisateur)
@@ -81,7 +80,7 @@ namespace GroupeV
             // Categorie configuration
             modelBuilder.Entity<Categorie>(entity =>
             {
-                entity.ToTable("categorie");
+                entity.ToTable("Categorie");
                 entity.HasKey(e => e.IdCategorie);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.UpdatedAt)
@@ -92,7 +91,7 @@ namespace GroupeV
             // Produit configuration
             modelBuilder.Entity<Produit>(entity =>
             {
-                entity.ToTable("produit");
+                entity.ToTable("Produit");
                 entity.HasKey(e => e.IdProduit);
 
                 entity.HasOne(e => e.Vendeur)
@@ -125,7 +124,7 @@ namespace GroupeV
             // Prevente configuration
             modelBuilder.Entity<Prevente>(entity =>
             {
-                entity.ToTable("prevente");
+                entity.ToTable("Prevente");
                 entity.HasKey(e => e.IdPrevente);
 
                 entity.HasOne(e => e.Produit)
@@ -143,7 +142,7 @@ namespace GroupeV
             // Ticket configuration
             modelBuilder.Entity<Ticket>(entity =>
             {
-                entity.ToTable("ticket");
+                entity.ToTable("seller_ticket");
                 entity.HasKey(e => e.IdTicket);
                 entity.Property(e => e.Statut).HasDefaultValue("ouvert");
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -159,7 +158,7 @@ namespace GroupeV
             // TicketMessage configuration
             modelBuilder.Entity<TicketMessage>(entity =>
             {
-                entity.ToTable("ticket_message");
+                entity.ToTable("seller_ticket_message");
                 entity.HasKey(e => e.IdMessage);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.HasOne(e => e.Vendeur)

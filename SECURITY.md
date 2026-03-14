@@ -70,22 +70,22 @@ La chaîne de connexion est lue depuis une **variable d'environnement** :
 
 ```csharp
 var connectionString = Environment.GetEnvironmentVariable("GROUPEV_CONNECTION_STRING")
-    ?? "Server=localhost;Uid=root;Pwd=;Database=vente_groupe;...";
+    ?? "Server=127.0.0.1;Port=32779;Uid=db;Pwd=db;Database=db;...";
 ```
 
-- En **production**, positionner obligatoirement `GROUPEV_CONNECTION_STRING` avec des identifiants dédiés (pas `root`).
-- La valeur de repli (localhost, sans mot de passe) ne doit exister qu'en **environnement de développement local**.
+- En **production**, positionner obligatoirement `GROUPEV_CONNECTION_STRING` avec des identifiants dédiés.
+- La valeur de repli (identifiants DDEV `db/db`) ne doit exister qu'en **environnement de développement local**.
 
 > ⚠️ Ne jamais commiter de chaîne de connexion contenant des identifiants réels dans le dépôt Git.
 
-### 3.2 Compte MySQL dédié
+### 3.2 Compte MariaDB dédié
 
-En production, le compte MySQL utilisé par l'application doit disposer uniquement des droits nécessaires :
+En production, le compte MariaDB utilisé par l'application doit disposer uniquement des droits nécessaires :
 
 ```sql
 -- Créer un compte dédié avec droits minimaux
 CREATE USER 'groupev_app'@'localhost' IDENTIFIED BY 'mot_de_passe_fort';
-GRANT SELECT, INSERT, UPDATE, DELETE ON vente_groupe.* TO 'groupev_app'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON db.* TO 'groupev_app'@'localhost';
 FLUSH PRIVILEGES;
 ```
 

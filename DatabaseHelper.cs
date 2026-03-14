@@ -10,7 +10,9 @@ namespace GroupeV
     /// </summary>
     public static class DatabaseHelper
     {
-        private const string ConnectionString = "Server=localhost;Uid=root;Pwd=;Database=vente_groupe;Connection Timeout=10;Default Command Timeout=30;";
+        public static string ConnectionString =>
+            Environment.GetEnvironmentVariable("GROUPEV_CONNECTION_STRING")
+            ?? "Server=127.0.0.1;Port=33066;Uid=db;Pwd=db;Database=db;Connection Timeout=10;Default Command Timeout=30;";
 
         /// <summary>
         /// Check if database connection is available
@@ -32,10 +34,10 @@ namespace GroupeV
             {
                 var errorDetail = ex.Number switch
                 {
-                    0 => "Unable to connect to MySQL server. Please verify:\n  • MySQL/XAMPP is running\n  • Server is accessible on localhost:3306",
-                    1042 => "Cannot resolve the database host address",
-                    1045 => "Access denied. Check MySQL username and password in connection string",
-                    1049 => "Database 'vente_groupe' does not exist",
+                    0 => "Unable to connect to MySQL/MariaDB server. Please verify:\n  • DDEV is running (ddev start)\n  • Server is accessible on 127.0.0.1:33066",
+                    1042 => "Cannot resolve the database host address (127.0.0.1)",
+                    1045 => "Access denied. Check DDEV database username and password",
+                    1049 => "Database 'db' does not exist",
                     _ => $"MySQL Error {ex.Number}: {ex.Message}"
                 };
                 return (false, errorDetail);
@@ -65,7 +67,7 @@ namespace GroupeV
                 await connection.OpenAsync();
 
                 // Check required tables for seller application
-                var requiredTables = new[] { "utilisateur", "vendeur", "produit", "categorie", "prevente" };
+                var requiredTables = new[] { "Utilisateur", "Vendeur", "Produit", "Categorie", "Prevente" };
                 
                 foreach (var tableName in requiredTables)
                 {

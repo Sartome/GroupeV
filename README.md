@@ -1,4 +1,4 @@
-# GroupeV — ChaosManager
+# GroupeV — Sell and Buy
 
 > Application de bureau Windows pour la gestion des ventes, des vendeurs et du catalogue produit.
 
@@ -6,9 +6,9 @@
 
 ## Présentation
 
-**GroupeV** (nom technique : *ChaosManager*) est une application client lourd développée en C# / WPF sur **.NET 8**. Elle permet aux vendeurs de gérer leur catalogue, de suivre leurs ventes et d'interagir avec le support, via une interface au design **neumorphique**.
+**GroupeV** est une application client lourd développée en C# / WPF sur **.NET 8**. Elle permet aux vendeurs de gérer leur catalogue, de suivre leurs ventes et d'interagir avec le support, via une interface au design **neumorphique**.
 
-L'application se connecte à une base de données **MySQL** partagée (`vente_groupe`) et est conçue pour fonctionner en parallèle d'un backend PHP.
+L'application se connecte à une base de données **MariaDB** hébergée via **DDEV** et est conçue pour fonctionner en parallèle d'un backend PHP.
 
 ---
 
@@ -92,8 +92,9 @@ GroupeV/
 |-----------|-------------|
 | Framework | .NET 8 — WPF (net8.0-windows, win-x64) |
 | Langage | C# 12 |
-| Base de données | MySQL 8 |
+| Base de données | MariaDB 11.8 (via DDEV) |
 | ORM | Entity Framework Core + Pomelo MySql |
+| Environnement local | DDEV (Docker + WSL) |
 | Graphiques | LiveChartsCore + SkiaSharp |
 | Hachage des mots de passe | Konscious.Security.Cryptography (Argon2id) |
 | Design UI | Neumorphisme (WPF custom styles) |
@@ -104,19 +105,43 @@ GroupeV/
 
 - Windows 10 / 11 (x64)
 - [.NET 8 Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)
-- MySQL 8.0+ (ex. via XAMPP) avec la base `vente_groupe`
+- [DDEV](https://ddev.readthedocs.io/) avec le projet `sellandbuy` démarré
 
 ---
 
 ## Configuration
 
-La chaîne de connexion à la base de données est lue depuis la variable d'environnement :
+### Base de données (DDEV)
+
+Le projet `sellandbuy` est hébergé via DDEV sous WSL :
 
 ```
-GROUPEV_CONNECTION_STRING=Server=localhost;Uid=root;Pwd=...;Database=vente_groupe;
+\\wsl.localhost\DDEV\home\atome\dev\project\sellandbuy
 ```
 
-En l'absence de cette variable, une valeur par défaut (localhost, sans mot de passe) est utilisée — **à ne jamais utiliser en production**.
+Paramètres de connexion par défaut DDEV :
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Serveur | `127.0.0.1` |
+| Port | `33066` |
+| Utilisateur | `db` |
+| Mot de passe | `db` |
+| Base de données | `db` |
+
+Pour obtenir le port actuel :
+
+```powershell
+wsl -d DDEV -- bash -c "cd /home/atome/dev/project/sellandbuy && ddev describe"
+```
+
+### Variable d'environnement (optionnel)
+
+La chaîne de connexion peut être surchargée via :
+
+```
+GROUPEV_CONNECTION_STRING=Server=127.0.0.1;Port=33066;Uid=db;Pwd=db;Database=db;
+```
 
 ---
 

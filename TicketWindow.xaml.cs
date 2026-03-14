@@ -255,5 +255,11 @@ namespace GroupeV
         }
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+        private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
     }
 }

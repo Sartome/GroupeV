@@ -6,6 +6,10 @@
         Height="500" 
         Width="700"
         WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        SnapsToDevicePixels="True"
         Background="{StaticResource NeuBackgroundBrush}"
         ResizeMode="NoResize">
 

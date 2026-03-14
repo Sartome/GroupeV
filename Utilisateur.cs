@@ -7,7 +7,7 @@ namespace GroupeV
     /// <summary>
     /// Base user entity representing utilisateur table
     /// </summary>
-    [Table("utilisateur")]
+    [Table("Utilisateur")]
     public class Utilisateur
     {
         [Key]

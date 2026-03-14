@@ -6,6 +6,10 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        SnapsToDevicePixels="True"
         Background="{StaticResource NeuBackgroundBrush}">
     <Grid Margin="28">
         <Grid.RowDefinitions>

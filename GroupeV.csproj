@@ -9,13 +9,13 @@
     
     <!-- Application metadata -->
     <AssemblyName>GroupeV</AssemblyName>
-    <Product>ChaosManager - GroupeV</Product>
+    <Product>GroupeV - Sell and Buy</Product>
     <Company>GroupeV Team</Company>
     <Copyright>Copyright © 2024 GroupeV</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>
-    <Description>Modern sales and vendor management application with MySQL integration</Description>
+    <Description>Modern sales and vendor management application with MariaDB integration via DDEV</Description>
     
     <!-- Runtime configuration -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -59,6 +59,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="MySql.Data" Version="9.6.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Converters\" />
   </ItemGroup>
 
 </Project>

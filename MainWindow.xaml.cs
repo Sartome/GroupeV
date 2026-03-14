@@ -228,22 +228,36 @@ namespace GroupeV
                 return;
             }
 
-            // Vérification de propriété : le vendeur ne peut modifier que ses propres produits
+            await OpenEditProductAsync(selected);
+        }
+
+        /// <summary>
+        /// Opens EditProductWindow for <paramref name="product"/> and refreshes the dashboard on save.
+        /// Called from both the toolbar button and the DataGrid double-click handler.
+        /// </summary>
+        private async Task OpenEditProductAsync(Produit product)
+        {
             if (AuthenticationService.CurrentSeller != null &&
-                selected.IdVendeur != AuthenticationService.CurrentSeller.IdUser)
+                product.IdVendeur != AuthenticationService.CurrentSeller.IdUser)
             {
                 NeuDialog.ShowWarning(this, "Accès refusé",
                     "Vous ne pouvez modifier que vos propres produits.");
                 return;
             }
 
-            var editWindow = new EditProductWindow(selected) { Owner = this };
+            var editWindow = new EditProductWindow(product) { Owner = this };
             if (editWindow.ShowDialog() == true)
             {
                 await ViewModel.LoadDashboardDataAsync();
                 LoadChartsAndAnalytics();
                 LoadActivityHeatmap();
             }
+        }
+
+        private async void SalesDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ViewModel.SelectedProduct is { } selected)
+                await OpenEditProductAsync(selected);
         }
 
         private async void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -286,24 +300,6 @@ namespace GroupeV
                 loginWindow.Show();
                 Close();
             }
-        }
-
-        // ========== TAB SWITCHING ==========
-
-        private void TabProduits_Click(object sender, RoutedEventArgs e)
-        {
-            ProduitsTab.Visibility = Visibility.Visible;
-            FacturesTab.Visibility = Visibility.Collapsed;
-            TabProduitsBtn.Style = (Style)FindResource("NeuButtonAccent");
-            TabFacturesBtn.Style = (Style)FindResource("NeuButton");
-        }
-
-        private void TabFactures_Click(object sender, RoutedEventArgs e)
-        {
-            ProduitsTab.Visibility = Visibility.Collapsed;
-            FacturesTab.Visibility = Visibility.Visible;
-            TabFacturesBtn.Style = (Style)FindResource("NeuButtonAccent");
-            TabProduitsBtn.Style = (Style)FindResource("NeuButton");
         }
 
         // ========== PANEL TOGGLES ==========

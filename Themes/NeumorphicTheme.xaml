@@ -6,6 +6,18 @@
          Palette : blanc chaud avec accent indigo vibrant
          ═══════════════════════════════════════════════════════════════ -->
 
+    <!-- ═══ GLOBAL TEXT SHARPNESS ═══
+         AllowsTransparency=True forces software rendering which disables hardware ClearType.
+         TextFormattingMode=Display snaps glyph positions to whole pixels (vs floating-point
+         "Ideal" mode) — the single biggest fix for blurry WPF text. SnapsToDevicePixels
+         prevents sub-pixel border/element positions. Both properties inherit through the
+         visual tree, so setting them here covers the entire application. -->
+    <Style TargetType="TextBlock">
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
     <!-- ═══ PALETTE DE COULEURS ═══ -->
     <Color x:Key="NeuBackground">#F0F2F5</Color>
     <Color x:Key="NeuSurface">#FFFFFF</Color>
@@ -353,11 +365,13 @@
     <Style x:Key="NeuToast" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
         <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="18,12"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Margin" Value="0,16,16,0"/>
-        <Setter Property="MaxWidth" Value="380"/>
+        <Setter Property="MaxWidth" Value="400"/>
+        <Setter Property="MinWidth" Value="260"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
         <Setter Property="Effect">
@@ -366,6 +380,14 @@
                                   Direction="315" Opacity="0.2"/>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- ═══ PROGRESSBAR NEUMORPHIQUE (indéterminé) ═══ -->
+    <Style x:Key="NeuProgressBarIndeterminate" TargetType="ProgressBar">
+        <Setter Property="Height" Value="4"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NeuAccentBrush}"/>
     </Style>
 
     <!-- ═══ CONVERTERS ═══ -->
