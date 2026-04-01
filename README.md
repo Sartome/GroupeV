@@ -168,4 +168,4 @@ Le `PasswordVerifier` est conçu pour être 100 % compatible avec la classe `Sec
 
 ## Licence
 
-Copyright © 2024 GroupeV Team. Tous droits réservés.
+Copyright © 2026 GroupeV Team. Tous droits réservés.
