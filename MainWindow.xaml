@@ -7,7 +7,7 @@
     xmlns:vm="clr-namespace:GroupeV.ViewModels"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     mc:Ignorable="d"
-    Title="GroupeV — Tableau de Bord" 
+    Title="GroupeV — Tableau de Bord"
     MinHeight="600" MinWidth="900"
     Height="720" Width="1200"
     Background="{StaticResource NeuBackgroundBrush}"
@@ -27,7 +27,7 @@
     <Window.Resources>
         <Storyboard x:Key="FadeInStoryboard">
             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="0" To="1" Duration="0:0:0.6">
+                             From="0" To="1" Duration="0:0:0.4">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
@@ -38,253 +38,441 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Header -->
             <RowDefinition Height="Auto"/>
+            <!-- Stat Cards -->
             <RowDefinition Height="*"/>
+            <!-- Main Content -->
             <RowDefinition Height="Auto"/>
+            <!-- Footer -->
         </Grid.RowDefinitions>
 
-        <!-- ═══ HEADER ═══ -->
-        <Border Grid.Row="0" Style="{StaticResource NeuCard}" CornerRadius="0,0,16,16" Padding="28,16" Margin="0,0,0,4"
-                BorderThickness="0,0,0,1" BorderBrush="{StaticResource NeuDividerBrush}">
+        <!-- ═══════════════════════════════════════════════════════════
+             HEADER — Flat, fond blanc, bordure basse fine
+             ═══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{StaticResource NeuSurfaceBrush}"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{StaticResource NeuDividerBrush}"
+                Padding="28,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Logo + Titre -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Style="{StaticResource NeuStatCard}" CornerRadius="12" Padding="8" Width="44" Height="44"
-                            Margin="0,0,14,0" VerticalAlignment="Center">
-                        <TextBlock Text="€" FontSize="20" FontWeight="Bold" 
+                    <Border Width="36" Height="36" CornerRadius="8"
+                            Background="{StaticResource NeuAccentBgBrush}"
+                            Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="€" FontSize="18" FontWeight="Bold"
                                    Foreground="{StaticResource NeuAccentBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock FontFamily="{StaticResource NeuFontFamily}" FontSize="20" FontWeight="Bold" 
-                                   Foreground="{StaticResource NeuTextPrimaryBrush}"
-                                   Text="Tableau de Bord"/>
-                        <TextBlock Text="{Binding WelcomeMessage}" 
-                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,2,0,0"/>
+                        <TextBlock Text="Tableau de Bord"
+                                   FontFamily="{StaticResource NeuFontFamily}"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource NeuTextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding WelcomeMessage}"
+                                   FontFamily="{StaticResource NeuFontFamily}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                   Margin="0,1,0,0"/>
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Button Content="👤  Profil" Style="{StaticResource NeuButton}" Padding="12,6" FontSize="11"
-                            Margin="0,0,14,0" Click="EditProfileButton_Click"/>
-                    <Ellipse Width="8" Height="8" Fill="{StaticResource NeuSuccessBrush}" Margin="0,0,6,0"/>
-                    <TextBlock Text="En ligne" FontFamily="{StaticResource NeuFontFamily}" FontSize="12" 
-                               Foreground="{StaticResource NeuSuccessBrush}" FontWeight="SemiBold"
+                <!-- Actions droite -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="👤  Profil"
+                            Style="{StaticResource NeuButton}"
+                            Padding="12,6" FontSize="12"
+                            Click="EditProfileButton_Click"/>
+                    <Border Width="8" Height="8" CornerRadius="4"
+                            Background="{StaticResource NeuSuccessBrush}"
+                            VerticalAlignment="Center"/>
+                    <TextBlock Text="En ligne"
+                               FontFamily="{StaticResource NeuFontFamily}"
+                               FontSize="12" FontWeight="Medium"
+                               Foreground="{StaticResource NeuSuccessBrush}"
                                VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- ═══ STATS CARDS (adaptive wrap) ═══ -->
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="20,12,20,6">
-            <UniformGrid Rows="1" MinWidth="800">
-                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,8,0">
-                    <StackPanel>
-                        <TextBlock Text="📦  Mes Produits" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding TotalProduits}" FontFamily="{StaticResource NeuFontFamily}" 
-                                   FontSize="30" FontWeight="Bold" Foreground="{StaticResource NeuAccentBrush}" Margin="0,6,0,0"/>
-                        <TextBlock Text="dans le catalogue" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,2,0,0"/>
-                    </StackPanel>
+        <!-- ═══════════════════════════════════════════════════════════
+             STAT CARDS — 4 cartes métriques, fond blanc, coins 8px
+             Hiérarchie : chiffre grand + gras / label petit + grisé
+             ═══════════════════════════════════════════════════════════ -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled"
+                      Margin="20,16,20,0">
+            <UniformGrid Rows="1" MinWidth="760">
+
+                <!-- Mes Produits -->
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Mes Produits"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding TotalProduits}"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="28" FontWeight="Bold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="dans le catalogue"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource NeuTextTertiaryBrush}"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8"
+                                Background="{StaticResource NeuAccentBgBrush}"
+                                VerticalAlignment="Top">
+                            <TextBlock Text="📦" FontSize="16"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                 </Border>
-                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,8,0">
-                    <StackPanel>
-                        <TextBlock Text="📊  Stock Total" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding TotalStock}" FontFamily="{StaticResource NeuFontFamily}" 
-                                   FontSize="30" FontWeight="Bold" Foreground="{StaticResource NeuWarningBrush}" Margin="0,6,0,0"/>
-                        <TextBlock Text="articles en stock" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,2,0,0"/>
-                    </StackPanel>
+
+                <!-- Stock Total -->
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Stock Total"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding TotalStock}"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="28" FontWeight="Bold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="articles en stock"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource NeuTextTertiaryBrush}"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8"
+                                Background="{StaticResource NeuWarningBadgeBgBrush}"
+                                VerticalAlignment="Top">
+                            <TextBlock Text="📊" FontSize="16"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                 </Border>
-                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,8,0">
-                    <StackPanel>
-                        <TextBlock Text="💰  Prix Moyen" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding AveragePrice}" FontFamily="{StaticResource NeuMonoFont}" 
-                                   FontSize="22" FontWeight="Bold" Foreground="{StaticResource NeuSuccessBrush}" Margin="0,6,0,0"/>
-                        <TextBlock Text="prix moyen global" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,2,0,0"/>
-                    </StackPanel>
+
+                <!-- Prix Moyen -->
+                <Border Style="{StaticResource NeuStatCard}" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Prix Moyen"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding AveragePrice}"
+                                       FontFamily="{StaticResource NeuMonoFont}"
+                                       FontSize="22" FontWeight="Bold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="prix moyen global"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource NeuTextTertiaryBrush}"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8"
+                                Background="{StaticResource NeuSuccessBadgeBgBrush}"
+                                VerticalAlignment="Top">
+                            <TextBlock Text="💰" FontSize="16"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                 </Border>
+
+                <!-- Vendeur Actif -->
                 <Border Style="{StaticResource NeuStatCard}">
-                    <StackPanel>
-                        <TextBlock Text="👤  Vendeur Actif" FontFamily="{StaticResource NeuFontFamily}" FontSize="11" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding ActiveSellerName}" FontFamily="{StaticResource NeuFontFamily}" 
-                                   FontSize="16" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" 
-                                   TextWrapping="Wrap" Margin="0,6,0,0"/>
-                        <TextBlock Text="{Binding ActiveSellerEmail}" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Vendeur Actif"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="12" Foreground="{StaticResource NeuTextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding ActiveSellerName}"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="15" FontWeight="Bold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}"
+                                       TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            <TextBlock Text="{Binding ActiveSellerEmail}"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource NeuTextTertiaryBrush}"
+                                       Margin="0,2,0,0"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8"
+                                Background="{StaticResource NeuInfoBadgeBgBrush}"
+                                VerticalAlignment="Top">
+                            <TextBlock Text="👤" FontSize="16"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                 </Border>
+
             </UniformGrid>
         </ScrollViewer>
 
-        <!-- ═══ MAIN CONTENT ═══ -->
-        <Grid Grid.Row="2" Margin="20,6,20,12">
+        <!-- ═══════════════════════════════════════════════════════════
+             MAIN CONTENT — 3 colonnes : Sidebar | Centre | Droite
+             ═══════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="2" Margin="20,14,20,14">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="LeftColDef" Width="220" MinWidth="180"/>
-                <ColumnDefinition Width="*" MinWidth="380"/>
-                <ColumnDefinition x:Name="RightColDef" Width="300" MinWidth="240"/>
+                <ColumnDefinition x:Name="LeftColDef"  Width="210" MinWidth="180"/>
+                <ColumnDefinition Width="*"             MinWidth="380"/>
+                <ColumnDefinition x:Name="RightColDef" Width="290" MinWidth="240"/>
             </Grid.ColumnDefinitions>
 
-            <!-- LEFT: NAVIGATION -->
-            <Border Grid.Column="0" x:Name="LeftNavBorder" Style="{StaticResource NeuCard}" Margin="0,0,10,0" Padding="16,20">
+            <!-- ═══ SIDEBAR GAUCHE ═══ -->
+            <Border Grid.Column="0"
+                    x:Name="LeftNavBorder"
+                    Style="{StaticResource NeuCard}"
+                    Padding="12,16"
+                    Margin="0,0,10,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="BASE DE DONNÉES" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   FontWeight="Bold" Foreground="{StaticResource NeuTextSecondaryBrush}" 
-                                   Margin="4,0,0,8"/>
 
-                        <Button x:Name="TestConnectionButton" Content="🔌  Tester Connexion" 
-                                Click="TestConnectionButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
-                        <Button x:Name="ShowDiagnosticsButton" Content="🔍  Diagnostics" 
-                                Click="ShowDiagnosticsButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
-                        <Button x:Name="HealthCheckButton" Content="💊  Santé BDD" 
-                                Click="HealthCheckButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
+                        <!-- Section : Base de données -->
+                        <TextBlock Text="BASE DE DONNÉES"
+                                   Style="{StaticResource NeuSidebarSectionLabel}"/>
 
+                        <Button x:Name="TestConnectionButton"
+                                Style="{StaticResource NeuButtonSidebar}"
+                                Click="TestConnectionButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔌" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Tester Connexion" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="ShowDiagnosticsButton"
+                                Style="{StaticResource NeuButtonSidebar}"
+                                Click="ShowDiagnosticsButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔍" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Diagnostics" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="HealthCheckButton"
+                                Style="{StaticResource NeuButtonSidebar}"
+                                Click="HealthCheckButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💊" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Santé BDD" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Séparateur -->
                         <Border Height="1" Background="{StaticResource NeuDividerBrush}" Margin="0,10"/>
 
-                        <TextBlock Text="OPÉRATIONS" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   FontWeight="Bold" Foreground="{StaticResource NeuTextSecondaryBrush}" 
-                                   Margin="4,0,0,8"/>
+                        <!-- Section : Opérations -->
+                        <TextBlock Text="OPÉRATIONS"
+                                   Style="{StaticResource NeuSidebarSectionLabel}"/>
 
-                        <Button x:Name="AddProductButton" Content="➕  Ajouter Produit" 
-                                Click="AddProductButton_Click" Style="{StaticResource NeuButtonAccent}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
-                        <Button x:Name="EditProductButton" Content="✏️  Modifier Produit" 
-                                Click="EditProductButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
-                        <Button x:Name="ExportButton" Content="📥  Exporter CSV" 
-                                Click="ExportButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
+                        <Button x:Name="AddProductButton"
+                                Style="{StaticResource NeuButtonAccent}"
+                                FontSize="13" Padding="10,9"
+                                HorizontalContentAlignment="Left"
+                                Click="AddProductButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="➕" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Ajouter Produit" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
+                        <Button x:Name="EditProductButton"
+                                Style="{StaticResource NeuButtonSidebar}"
+                                Click="EditProductButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="✏️" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Modifier Produit" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="ExportButton"
+                                Style="{StaticResource NeuButtonSidebar}"
+                                Click="ExportButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📥" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Exporter CSV" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Séparateur -->
                         <Border Height="1" Background="{StaticResource NeuDividerBrush}" Margin="0,10"/>
 
-                        <Button x:Name="LogoutButton" Content="🚪  Déconnexion" 
-                                Click="LogoutButton_Click" Style="{StaticResource NeuButtonDanger}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
+                        <!-- Section : Support -->
+                        <TextBlock Text="SUPPORT"
+                                   Style="{StaticResource NeuSidebarSectionLabel}"/>
 
+                        <Button Style="{StaticResource NeuButtonSidebar}"
+                                Click="TicketsButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🎫" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Mes Tickets" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Séparateur -->
                         <Border Height="1" Background="{StaticResource NeuDividerBrush}" Margin="0,10"/>
 
-                        <TextBlock Text="SUPPORT" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   FontWeight="Bold" Foreground="{StaticResource NeuTextSecondaryBrush}" 
-                                   Margin="4,0,0,8"/>
+                        <!-- Déconnexion -->
+                        <Button x:Name="LogoutButton"
+                                Style="{StaticResource NeuButtonDanger}"
+                                FontSize="13" Padding="10,9"
+                                HorizontalContentAlignment="Left"
+                                Click="LogoutButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🚪" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Déconnexion" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
-                        <Button Content="🎫  Mes Tickets" 
-                                Click="TicketsButton_Click" Style="{StaticResource NeuButton}" FontSize="12" Padding="12,8"
-                                HorizontalContentAlignment="Left"/>
-
+                        <!-- Séparateur -->
                         <Border Height="1" Background="{StaticResource NeuDividerBrush}" Margin="0,10"/>
 
-                        <TextBlock Text="STATISTIQUES RAPIDES" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                   FontWeight="Bold" Foreground="{StaticResource NeuTextSecondaryBrush}" 
-                                   Margin="4,0,0,8"/>
+                        <!-- Statistiques rapides -->
+                        <TextBlock Text="STATISTIQUES"
+                                   Style="{StaticResource NeuSidebarSectionLabel}"/>
                         <Border Style="{StaticResource NeuCardInset}" Padding="12">
-                            <TextBlock Text="{Binding QuickStats}" FontFamily="{StaticResource NeuMonoFont}" FontSize="10" 
-                                       Foreground="{StaticResource NeuTextSecondaryBrush}" TextWrapping="Wrap" LineHeight="16"/>
+                            <TextBlock Text="{Binding QuickStats}"
+                                       FontFamily="{StaticResource NeuMonoFont}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                       TextWrapping="Wrap" LineHeight="17"/>
                         </Border>
+
                     </StackPanel>
                 </ScrollViewer>
             </Border>
 
-            <!-- CENTER: TABS (Produits / Préventes) -->
-            <Border Grid.Column="1" Style="{StaticResource NeuCard}" Margin="0,0,10,0" Padding="20">
+            <!-- ═══ CENTRE : ONGLETS (Produits / Préventes) ═══ -->
+            <Border Grid.Column="1" Style="{StaticResource NeuCard}" Padding="20" Margin="0,0,10,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <!-- Barre d'onglets + toggles -->
                         <RowDefinition Height="Auto"/>
+                        <!-- Barre de recherche -->
                         <RowDefinition Height="*"/>
+                        <!-- Contenu onglet -->
                     </Grid.RowDefinitions>
 
-                    <!-- Tab buttons + panel toggles -->
-                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <!-- Barre d'onglets -->
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- Toggle panneau gauche -->
                         <Button Grid.Column="0" x:Name="ToggleLeftBtn" Content="◀"
-                                Click="ToggleLeft_Click" Style="{StaticResource NeuButton}"
-                                Width="30" Height="30" Padding="0" FontSize="11" Margin="0,0,8,0"
+                                Click="ToggleLeft_Click"
+                                Style="{StaticResource NeuButtonGhost}"
+                                Width="30" Height="30" Padding="0" FontSize="11"
+                                Margin="0,0,8,0"
                                 ToolTip="Masquer / Afficher le panneau gauche"/>
 
+                        <!-- Onglets -->
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Button x:Name="TabProduitsBtn" Content="📦  Produits"
-                                    Command="{Binding SwitchTabCommand}" CommandParameter="produits"
-                                    Height="30" FontSize="12" FontWeight="SemiBold" Margin="0,0,6,0" Padding="14,4"
+                            <Button x:Name="TabProduitsBtn"
+                                    Command="{Binding SwitchTabCommand}"
+                                    CommandParameter="produits"
+                                    Height="32" FontSize="13" FontWeight="Normal"
+                                    Margin="0,0,6,0" Padding="14,0"
                                     AutomationProperties.Name="Onglet Produits">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource NeuButton}">
+                                        <Setter Property="Foreground" Value="{StaticResource NeuTextSecondaryBrush}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsProduitsTabSelected}" Value="True">
-                                                <Setter Property="Background">
-                                                    <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                            <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
-                                                            <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="Background"   Value="{StaticResource NeuAccentBgBrush}"/>
+                                                <Setter Property="Foreground"   Value="{StaticResource NeuAccentBrush}"/>
+                                                <Setter Property="FontWeight"   Value="SemiBold"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📦" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Produits" FontFamily="{StaticResource NeuFontFamily}" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Button>
-                            <Button x:Name="TabFacturesBtn" Content="👥  Préventes"
-                                    Command="{Binding SwitchTabCommand}" CommandParameter="preventes"
-                                    Height="30" FontSize="12" FontWeight="SemiBold" Padding="14,4"
+
+                            <Button x:Name="TabFacturesBtn"
+                                    Command="{Binding SwitchTabCommand}"
+                                    CommandParameter="preventes"
+                                    Height="32" FontSize="13" FontWeight="Normal"
+                                    Padding="14,0"
                                     AutomationProperties.Name="Onglet Préventes">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource NeuButton}">
+                                        <Setter Property="Foreground" Value="{StaticResource NeuTextSecondaryBrush}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsProduitsTabSelected}" Value="False">
-                                                <Setter Property="Background">
-                                                    <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                            <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
-                                                            <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="Background"   Value="{StaticResource NeuAccentBgBrush}"/>
+                                                <Setter Property="Foreground"   Value="{StaticResource NeuAccentBrush}"/>
+                                                <Setter Property="FontWeight"   Value="SemiBold"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="👥" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Préventes" FontFamily="{StaticResource NeuFontFamily}" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Button>
                         </StackPanel>
 
+                        <!-- Toggle panneau droit -->
                         <Button Grid.Column="2" x:Name="ToggleRightBtn" Content="▶"
-                                Click="ToggleRight_Click" Style="{StaticResource NeuButton}"
-                                Width="30" Height="30" Padding="0" FontSize="11" Margin="8,0,0,0"
+                                Click="ToggleRight_Click"
+                                Style="{StaticResource NeuButtonGhost}"
+                                Width="30" Height="30" Padding="0" FontSize="11"
+                                Margin="8,0,0,0"
                                 ToolTip="Masquer / Afficher le panneau droit"/>
                     </Grid>
 
-                    <!-- Search bar with watermark placeholder -->
-                    <!-- UX: Without placeholder text the user has no affordance cue about what this field
-                         filters. The overlay TextBlock is IsHitTestVisible=False so clicks pass through. -->
-                    <Grid Grid.Row="1" Margin="0,0,0,10">
-                        <TextBox x:Name="SearchBox" Style="{StaticResource NeuTextBox}"
+                    <!-- Barre de recherche avec placeholder -->
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
+                        <TextBox x:Name="SearchBox"
+                                 Style="{StaticResource NeuTextBox}"
                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Height="36" FontSize="12"
+                                 Height="36" FontSize="13"
                                  AutomationProperties.Name="Rechercher un produit"/>
                         <TextBlock Text="🔍  Rechercher un produit, une catégorie, un prix..."
-                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
-                                   Foreground="{StaticResource NeuTextSecondaryBrush}"
-                                   VerticalAlignment="Center" Margin="16,0,0,0"
+                                   FontFamily="{StaticResource NeuFontFamily}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource NeuTextTertiaryBrush}"
+                                   VerticalAlignment="Center" Margin="14,0,0,0"
                                    IsHitTestVisible="False">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -299,8 +487,10 @@
                         </TextBlock>
                     </Grid>
 
-                    <!-- PRODUITS TAB -->
-                    <Border Grid.Row="2" x:Name="ProduitsTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="10"
+                    <!-- ═══ ONGLET PRODUITS ═══ -->
+                    <Border Grid.Row="2" x:Name="ProduitsTab"
+                            BorderThickness="1" BorderBrush="{StaticResource NeuDividerBrush}"
+                            CornerRadius="6" ClipToBounds="True"
                             Visibility="{Binding IsProduitsTabSelected, Converter={StaticResource BoolToVis}}">
                         <Grid>
                             <DataGrid x:Name="SalesDataGrid"
@@ -310,116 +500,160 @@
                                       ColumnHeaderStyle="{StaticResource NeuDataGridColumnHeader}"
                                       CellStyle="{StaticResource NeuDataGridCell}"
                                       RowStyle="{StaticResource NeuDataGridRow}"
-                                      RowHeight="48"
                                       MouseDoubleClick="SalesDataGrid_MouseDoubleClick"
                                       AutomationProperties.Name="Liste des produits">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding IdProduit}" Width="50"/>
-                                <DataGridTemplateColumn Header="Image" Width="56">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border Width="36" Height="36" CornerRadius="8" 
-                                                    Background="{StaticResource NeuDividerBrush}" ClipToBounds="True">
-                                                <Image Source="{Binding ImageAbsolutePath, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
-                                                       Stretch="UniformToFill"
-                                                       RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Produit" Binding="{Binding Description}" Width="*" MinWidth="120"/>
-                                <DataGridTextColumn Header="Prix TTC" Binding="{Binding PrixFormate}" Width="90"/>
-                                <DataGridTextColumn Header="Qté" Binding="{Binding Quantity}" Width="50"/>
-                                <DataGridTemplateColumn Header="Stock" Width="90">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border CornerRadius="8" Padding="6,3" HorizontalAlignment="Left">
-                                                <Border.Style>
-                                                    <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="{StaticResource NeuSuccessBrush}"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsInStock}" Value="False">
-                                                                <Setter Property="Background" Value="{StaticResource NeuDangerBrush}"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <TextBlock Text="{Binding StockBadge}" FontSize="10" FontWeight="SemiBold"
-                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Type" Width="110">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border CornerRadius="8" Padding="6,3" HorizontalAlignment="Left" Opacity="0.9">
-                                                <Border.Style>
-                                                    <Style TargetType="Border">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding TypeVente}" Value="0">
-                                                                <Setter Property="Background" Value="{StaticResource NeuInfoBrush}"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TypeVente}" Value="1">
-                                                                <Setter Property="Background" Value="{StaticResource NeuWarningBrush}"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TypeVente}" Value="2">
-                                                                <Setter Property="Background" Value="{StaticResource NeuDangerBrush}"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <TextBlock Text="{Binding TypeVenteBadge}" FontSize="10" FontWeight="SemiBold"
-                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Catégorie" Width="110">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border Background="{StaticResource NeuAccentBrush}" CornerRadius="8" 
-                                                    Padding="6,3" HorizontalAlignment="Left" Opacity="0.85">
-                                                <TextBlock Text="{Binding CategorieNom}" FontSize="10" FontWeight="SemiBold"
-                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Créé le" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="85"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID"
+                                                        Binding="{Binding IdProduit}"
+                                                        Width="50"/>
+                                    <DataGridTemplateColumn Header="Image" Width="56">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Width="32" Height="32" CornerRadius="6"
+                                                        Background="{StaticResource NeuInputBgBrush}"
+                                                        ClipToBounds="True">
+                                                    <Image Source="{Binding ImageAbsolutePath, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
+                                                           Stretch="UniformToFill"
+                                                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Produit"
+                                                        Binding="{Binding Description}"
+                                                        Width="*" MinWidth="120"/>
+                                    <DataGridTextColumn Header="Prix TTC"
+                                                        Binding="{Binding PrixFormate}"
+                                                        Width="90"/>
+                                    <DataGridTextColumn Header="Qté"
+                                                        Binding="{Binding Quantity}"
+                                                        Width="50"/>
 
-                        <!-- UX: Empty state — shown when FilteredProduits is empty (no products yet, or search
-                             returned 0 results). Gives the user context and a clear next action. -->
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1"
-                                    Visibility="{Binding IsProductListEmpty, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Text="📦" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                            <TextBlock Text="Aucun produit trouvé"
-                                       FontFamily="{StaticResource NeuFontFamily}" FontSize="16" FontWeight="SemiBold"
-                                       Foreground="{StaticResource NeuTextPrimaryBrush}" HorizontalAlignment="Center"/>
-                            <TextBlock FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
-                                       Foreground="{StaticResource NeuTextSecondaryBrush}"
-                                       HorizontalAlignment="Center" Margin="0,6,0,0" TextAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <!-- Default: active search filter returned nothing -->
-                                        <Setter Property="Text" Value="Aucun résultat pour cette recherche. Essayez d'autres mots-clés."/>
-                                        <Style.Triggers>
-                                            <!-- No filter: seller has no products yet -->
-                                            <DataTrigger Binding="{Binding SearchText}" Value="">
-                                                <Setter Property="Text" Value="Cliquez sur ➕ Ajouter Produit pour commencer"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                    </Grid>
+                                    <!-- Badge Stock — style Pill Pastel -->
+                                    <DataGridTemplateColumn Header="Stock" Width="90">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="12" Padding="8,3"
+                                                        HorizontalAlignment="Left">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{StaticResource NeuSuccessBadgeBgBrush}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsInStock}" Value="False">
+                                                                    <Setter Property="Background" Value="{StaticResource NeuDangerBadgeBgBrush}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding StockBadge}"
+                                                               FontFamily="{StaticResource NeuFontFamily}"
+                                                               FontSize="11" FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="{StaticResource NeuSuccessBadgeFgBrush}"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsInStock}" Value="False">
+                                                                        <Setter Property="Foreground" Value="{StaticResource NeuDangerBadgeFgBrush}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- Badge Type de vente — Pill Pastel -->
+                                    <DataGridTemplateColumn Header="Type" Width="110">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="12" Padding="8,3" HorizontalAlignment="Left">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{StaticResource NeuInfoBadgeBgBrush}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TypeVente}" Value="1">
+                                                                    <Setter Property="Background" Value="{StaticResource NeuWarningBadgeBgBrush}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding TypeVente}" Value="2">
+                                                                    <Setter Property="Background" Value="{StaticResource NeuAccentBadgeBgBrush}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding TypeVenteBadge}"
+                                                               FontFamily="{StaticResource NeuFontFamily}"
+                                                               FontSize="11" FontWeight="SemiBold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="{StaticResource NeuInfoBadgeFgBrush}"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TypeVente}" Value="1">
+                                                                        <Setter Property="Foreground" Value="{StaticResource NeuWarningBadgeFgBrush}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding TypeVente}" Value="2">
+                                                                        <Setter Property="Foreground" Value="{StaticResource NeuAccentBadgeFgBrush}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- Badge Catégorie — Pill Pastel Neutre -->
+                                    <DataGridTemplateColumn Header="Catégorie" Width="110">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{StaticResource NeuNeutralBadgeBgBrush}"
+                                                        CornerRadius="12" Padding="8,3" HorizontalAlignment="Left">
+                                                    <TextBlock Text="{Binding CategorieNom}"
+                                                               FontFamily="{StaticResource NeuFontFamily}"
+                                                               FontSize="11" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource NeuNeutralBadgeFgBrush}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTextColumn Header="Créé le"
+                                                        Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}"
+                                                        Width="85"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- État vide — aucun produit -->
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1"
+                                        Visibility="{Binding IsProductListEmpty, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="📦" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                                <TextBlock Text="Aucun produit trouvé"
+                                           FontFamily="{StaticResource NeuFontFamily}" FontSize="15" FontWeight="SemiBold"
+                                           Foreground="{StaticResource NeuTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
+                                           Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                           HorizontalAlignment="Center" Margin="0,6,0,0" TextAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="Aucun résultat pour cette recherche."/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                    <Setter Property="Text" Value="Cliquez sur ➕ Ajouter Produit pour commencer"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </Border>
 
-                    <!-- PRÉVENTES TAB -->
-                    <Border Grid.Row="2" x:Name="FacturesTab" Style="{StaticResource NeuCardInset}" Padding="0" CornerRadius="10"
+                    <!-- ═══ ONGLET PRÉVENTES ═══ -->
+                    <Border Grid.Row="2" x:Name="FacturesTab"
+                            BorderThickness="1" BorderBrush="{StaticResource NeuDividerBrush}"
+                            CornerRadius="6" ClipToBounds="True"
                             Visibility="{Binding IsPreventesTabSelected, Converter={StaticResource BoolToVis}}">
                         <DataGrid Style="{StaticResource NeuDataGrid}"
                                   ItemsSource="{Binding Factures}"
@@ -427,117 +661,178 @@
                                   CellStyle="{StaticResource NeuDataGridCell}"
                                   RowStyle="{StaticResource NeuDataGridRow}">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="N°" Binding="{Binding IdPrevente}" Width="50"/>
-                                <DataGridTextColumn Header="Article" Binding="{Binding ProduitDescription}" Width="*" MinWidth="120"/>
-                                <DataGridTextColumn Header="Prix Prévente" Binding="{Binding PrixFormate}" Width="100"/>
-                                <DataGridTextColumn Header="Min Acheteurs" Binding="{Binding NombreMin}" Width="90"/>
+                                <DataGridTextColumn Header="N°"           Binding="{Binding IdPrevente}"          Width="50"/>
+                                <DataGridTextColumn Header="Article"      Binding="{Binding ProduitDescription}"  Width="*" MinWidth="120"/>
+                                <DataGridTextColumn Header="Prix Prévente" Binding="{Binding PrixFormate}"        Width="100"/>
+                                <DataGridTextColumn Header="Min Acheteurs" Binding="{Binding NombreMin}"          Width="90"/>
                                 <DataGridTemplateColumn Header="Statut" Width="110">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border CornerRadius="8" Padding="6,3" HorizontalAlignment="Left" Opacity="0.9"
-                                                    Background="{StaticResource NeuWarningBrush}">
-                                                <TextBlock Text="{Binding StatutBadge}" FontSize="10" FontWeight="SemiBold"
-                                                           Foreground="White" FontFamily="{StaticResource NeuFontFamily}"/>
+                                            <Border Background="{StaticResource NeuWarningBadgeBgBrush}"
+                                                    CornerRadius="12" Padding="8,3" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding StatutBadge}"
+                                                           FontFamily="{StaticResource NeuFontFamily}"
+                                                           FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="{StaticResource NeuWarningBadgeFgBrush}"/>
                                             </Border>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Limite" Binding="{Binding DateLimiteFormate}" Width="85"/>
+                                <DataGridTextColumn Header="Limite"  Binding="{Binding DateLimiteFormate}"              Width="85"/>
                                 <DataGridTextColumn Header="Créé le" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="85"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
+
                 </Grid>
             </Border>
 
-            <!-- RIGHT: CHARTS & ANALYTICS -->
-            <ScrollViewer Grid.Column="2" x:Name="RightChartsScrollViewer" VerticalScrollBarVisibility="Auto">
+            <!-- ═══ DROITE : GRAPHIQUES & ANALYTICS ═══ -->
+            <ScrollViewer Grid.Column="2" x:Name="RightChartsScrollViewer"
+                          VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,8" Padding="18">
+
+                    <!-- Répartition Catégories -->
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,10" Padding="18">
                         <StackPanel>
-                            <TextBlock Text="📊  Répartition Catégories" FontFamily="{StaticResource NeuFontFamily}" 
-                                       FontSize="13" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,8"/>
-                            <lvc:PieChart x:Name="CategoriesPieChart" Height="180" Background="Transparent" LegendPosition="Right"/>
+                            <TextBlock Text="Répartition Catégories"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <lvc:PieChart x:Name="CategoriesPieChart" Height="180"
+                                          Background="Transparent" LegendPosition="Right"/>
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,8" Padding="18">
+                    <!-- Prix Moyens par Catégorie -->
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,10" Padding="18">
                         <StackPanel>
-                            <TextBlock Text="📈  Prix Moyens par Catégorie" FontFamily="{StaticResource NeuFontFamily}" 
-                                       FontSize="13" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,8"/>
-                            <lvc:CartesianChart x:Name="PrixMoyensChart" Height="180" Background="Transparent"/>
+                            <TextBlock Text="Prix Moyens par Catégorie"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <lvc:CartesianChart x:Name="PrixMoyensChart" Height="180"
+                                                Background="Transparent"/>
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,8" Padding="18">
+                    <!-- Analytics -->
+                    <Border Style="{StaticResource NeuCard}" Margin="0,0,0,10" Padding="18">
                         <StackPanel>
-                            <TextBlock Text="🏷️  Analytics" FontFamily="{StaticResource NeuFontFamily}" 
-                                       FontSize="13" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
+                            <TextBlock Text="Analytics"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,12"/>
+
+                            <!-- Produit le plus cher -->
                             <Border Style="{StaticResource NeuCardInset}" Margin="0,0,0,8" Padding="12">
                                 <StackPanel>
-                                    <TextBlock Text="Produit le plus cher" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                               Foreground="{StaticResource NeuWarningBrush}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding MostExpensiveProduct}" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" 
-                                               FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" Margin="0,3,0,0"/>
-                                    <TextBlock Text="{Binding MostExpensivePrice}" FontFamily="{StaticResource NeuMonoFont}" FontSize="12" 
-                                               Foreground="{StaticResource NeuWarningBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                        <Border Background="{StaticResource NeuWarningBadgeBgBrush}"
+                                                CornerRadius="4" Padding="5,2" Margin="0,0,8,0">
+                                            <TextBlock Text="MAX" FontSize="9" FontWeight="Bold"
+                                                       Foreground="{StaticResource NeuWarningBadgeFgBrush}"
+                                                       FontFamily="{StaticResource NeuFontFamily}"/>
+                                        </Border>
+                                        <TextBlock Text="Produit le plus cher"
+                                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="11"
+                                                   Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding MostExpensiveProduct}"
+                                               FontFamily="{StaticResource NeuFontFamily}" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding MostExpensivePrice}"
+                                               FontFamily="{StaticResource NeuMonoFont}" FontSize="12"
+                                               Foreground="{StaticResource NeuWarningBrush}" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
+
+                            <!-- Produit le moins cher -->
                             <Border Style="{StaticResource NeuCardInset}" Padding="12">
                                 <StackPanel>
-                                    <TextBlock Text="Produit le moins cher" FontFamily="{StaticResource NeuFontFamily}" FontSize="10" 
-                                               Foreground="{StaticResource NeuAccentBrush}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding LeastExpensiveProduct}" FontFamily="{StaticResource NeuFontFamily}" FontSize="13" 
-                                               FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap" Margin="0,3,0,0"/>
-                                    <TextBlock Text="{Binding LeastExpensivePrice}" FontFamily="{StaticResource NeuMonoFont}" FontSize="12" 
-                                               Foreground="{StaticResource NeuAccentBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                        <Border Background="{StaticResource NeuSuccessBadgeBgBrush}"
+                                                CornerRadius="4" Padding="5,2" Margin="0,0,8,0">
+                                            <TextBlock Text="MIN" FontSize="9" FontWeight="Bold"
+                                                       Foreground="{StaticResource NeuSuccessBadgeFgBrush}"
+                                                       FontFamily="{StaticResource NeuFontFamily}"/>
+                                        </Border>
+                                        <TextBlock Text="Produit le moins cher"
+                                                   FontFamily="{StaticResource NeuFontFamily}" FontSize="11"
+                                                   Foreground="{StaticResource NeuTextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding LeastExpensiveProduct}"
+                                               FontFamily="{StaticResource NeuFontFamily}" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource NeuTextPrimaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding LeastExpensivePrice}"
+                                               FontFamily="{StaticResource NeuMonoFont}" FontSize="12"
+                                               Foreground="{StaticResource NeuSuccessBrush}" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                     </Border>
 
+                    <!-- Activité Récente -->
                     <Border Style="{StaticResource NeuCard}" Padding="18">
                         <StackPanel>
-                            <TextBlock Text="🔥  Activité Récente" FontFamily="{StaticResource NeuFontFamily}" 
-                                       FontSize="13" FontWeight="Bold" Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,8"/>
+                            <TextBlock Text="Activité Récente"
+                                       FontFamily="{StaticResource NeuFontFamily}"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource NeuTextPrimaryBrush}" Margin="0,0,0,10"/>
                             <StackPanel x:Name="ActivityHeatmapPanel"/>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>
 
-        <!-- ═══ FOOTER ═══ -->
-        <Border Grid.Row="3" Style="{StaticResource NeuCard}" CornerRadius="16,16,0,0" Padding="20,10" Margin="0,4,0,0"
-                BorderThickness="0,1,0,0" BorderBrush="{StaticResource NeuDividerBrush}">
+        <!-- ═══════════════════════════════════════════════════════════
+             FOOTER — Flat, fond blanc, bordure haute fine
+             ═══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="3"
+                Background="{StaticResource NeuSurfaceBrush}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{StaticResource NeuDividerBrush}"
+                Padding="24,10">
             <Grid>
-                <TextBlock Text="{Binding StatusMessage}" FontFamily="{StaticResource NeuMonoFont}" FontSize="11" 
-                           Foreground="{StaticResource NeuTextSecondaryBrush}" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding RecordCount}" FontFamily="{StaticResource NeuMonoFont}" FontSize="11" 
-                           Foreground="{StaticResource NeuTextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontFamily="{StaticResource NeuMonoFont}" FontSize="11"
+                           Foreground="{StaticResource NeuTextTertiaryBrush}"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding RecordCount}"
+                           FontFamily="{StaticResource NeuMonoFont}" FontSize="11"
+                           Foreground="{StaticResource NeuTextTertiaryBrush}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
-        <!-- ═══ LOADING OVERLAY ═══ -->
-        <!-- UX: Covers the entire window during async data loads (IsLoading=True), preventing accidental
-             interaction with stale data and giving clear perceived-performance feedback. ZIndex 200
-             sits above the toast (100) so loading always wins visual priority. -->
+        <!-- ═══════════════════════════════════════════════════════════
+             LOADING OVERLAY
+             ═══════════════════════════════════════════════════════════ -->
         <Grid Grid.RowSpan="4" Panel.ZIndex="200"
               Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
             <Grid.Background>
-                <SolidColorBrush Color="{StaticResource NeuBackground}" Opacity="0.82"/>
+                <SolidColorBrush Color="{StaticResource NeuBackground}" Opacity="0.85"/>
             </Grid.Background>
             <Border Style="{StaticResource NeuCard}" Padding="40,32"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect Color="{StaticResource NeuDarkShadow}"
+                                      BlurRadius="20" ShadowDepth="6"
+                                      Direction="270" Opacity="0.10"/>
+                </Border.Effect>
                 <StackPanel HorizontalAlignment="Center" MinWidth="220">
                     <ProgressBar Style="{StaticResource NeuProgressBarIndeterminate}"
-                                 IsIndeterminate="True" Width="200" Margin="0,0,0,18"/>
+                                 IsIndeterminate="True" Width="200" Margin="0,0,0,20"/>
                     <TextBlock Text="Chargement en cours..."
                                FontFamily="{StaticResource NeuFontFamily}" FontSize="14" FontWeight="SemiBold"
                                Foreground="{StaticResource NeuTextPrimaryBrush}"
                                HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding StatusMessage}"
-                               FontFamily="{StaticResource NeuFontFamily}" FontSize="11"
+                               FontFamily="{StaticResource NeuFontFamily}" FontSize="12"
                                Foreground="{StaticResource NeuTextSecondaryBrush}"
                                HorizontalAlignment="Center" Margin="0,6,0,0"
                                TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300"/>
@@ -545,21 +840,22 @@
             </Border>
         </Grid>
 
-        <!-- ═══ TOAST NOTIFICATION OVERLAY ═══ -->
-        <!-- UX: Left accent strip + icon provide instant success/error recognition without reading text.
-             DataTriggers on IsToastError swap the strip and icon between green (success) and red (error). -->
-        <Border Grid.RowSpan="4" Style="{StaticResource NeuToast}"
+        <!-- ═══════════════════════════════════════════════════════════
+             TOAST NOTIFICATION OVERLAY
+             ═══════════════════════════════════════════════════════════ -->
+        <Border Grid.RowSpan="4"
+                Style="{StaticResource NeuToast}"
                 Visibility="{Binding IsToastVisible, Converter={StaticResource BoolToVis}}"
                 Panel.ZIndex="100">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="4"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Left accent strip: green = success, red = error -->
-                <Border Grid.Column="0">
+                <!-- Bande colorée gauche -->
+                <Border Grid.Column="0" CornerRadius="8,0,0,8">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="{StaticResource NeuSuccessBrush}"/>
@@ -572,16 +868,16 @@
                     </Border.Style>
                 </Border>
 
-                <!-- Status icon -->
-                <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold"
+                <!-- Icône statut -->
+                <TextBlock Grid.Column="1" FontSize="13" FontWeight="Bold"
                            VerticalAlignment="Center" Margin="12,0,4,0">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Text" Value="✓"/>
+                            <Setter Property="Text"       Value="✓"/>
                             <Setter Property="Foreground" Value="{StaticResource NeuSuccessBrush}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsToastError}" Value="True">
-                                    <Setter Property="Text" Value="✕"/>
+                                    <Setter Property="Text"       Value="✕"/>
                                     <Setter Property="Foreground" Value="{StaticResource NeuDangerBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -590,12 +886,14 @@
                 </TextBlock>
 
                 <!-- Message -->
-                <TextBlock Grid.Column="2" Text="{Binding ToastMessage}"
+                <TextBlock Grid.Column="2"
+                           Text="{Binding ToastMessage}"
                            FontFamily="{StaticResource NeuFontFamily}" FontSize="13"
                            Foreground="{StaticResource NeuTextPrimaryBrush}"
                            TextWrapping="Wrap" VerticalAlignment="Center"
                            Margin="0,12,16,12"/>
             </Grid>
         </Border>
+
     </Grid>
 </Window>

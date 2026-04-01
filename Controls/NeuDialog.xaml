@@ -1,53 +1,65 @@
 <Window x:Class="GroupeV.Controls.NeuDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="GroupeV" 
+        Title="GroupeV"
         SizeToContent="WidthAndHeight"
-        MinWidth="380" MaxWidth="520"
-        Background="Transparent"
+        MinWidth="360" MaxWidth="500"
+        Background="{StaticResource NeuBackgroundBrush}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        ShowInTaskbar="False">
+        WindowStyle="SingleBorderWindow"
+        ShowInTaskbar="False"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        SnapsToDevicePixels="True">
 
-    <Border CornerRadius="18" Background="{StaticResource NeuBackgroundBrush}" Padding="0">
-        <Border.Effect>
-            <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="24" ShadowDepth="6" Direction="315" Opacity="0.2"/>
-        </Border.Effect>
+    <!-- Carte blanche centrée sur fond gris -->
+    <Border Background="{StaticResource NeuSurfaceBrush}"
+            BorderThickness="1"
+            BorderBrush="{StaticResource NeuDividerBrush}">
 
         <StackPanel Margin="32,28,32,24">
-            <!-- Icon -->
-            <Border x:Name="IconBorder" Width="56" Height="56" CornerRadius="28"
-                    HorizontalAlignment="Center" Margin="0,0,0,18">
-                <Border.Effect>
-                    <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="12" ShadowDepth="4" Direction="315" Opacity="0.35"/>
-                </Border.Effect>
-                <TextBlock x:Name="IconText" Text="ℹ" FontSize="28" FontWeight="Bold"
+
+            <!-- Icône -->
+            <Border x:Name="IconBorder"
+                    Width="48" Height="48" CornerRadius="12"
+                    HorizontalAlignment="Center" Margin="0,0,0,16">
+                <TextBlock x:Name="IconText" Text="ℹ"
+                           FontSize="24" FontWeight="Bold"
                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
 
-            <!-- Title -->
+            <!-- Titre -->
             <TextBlock x:Name="TitleTextBlock" Text="Titre"
-                       FontFamily="{StaticResource NeuFontFamily}" FontSize="18" FontWeight="Bold"
+                       FontFamily="{StaticResource NeuFontFamily}"
+                       FontSize="17" FontWeight="Bold"
                        Foreground="{StaticResource NeuTextPrimaryBrush}"
-                       HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,10"/>
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       Margin="0,0,0,8"/>
 
             <!-- Message -->
             <TextBlock x:Name="MessageTextBlock" Text="Message"
                        FontFamily="{StaticResource NeuFontFamily}" FontSize="13"
                        Foreground="{StaticResource NeuTextSecondaryBrush}"
-                       TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,24"
-                       MaxWidth="420" LineHeight="20"/>
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,0,0,24" MaxWidth="400" LineHeight="20"/>
 
-            <!-- Buttons -->
-            <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="PrimaryButton" Content="OK" Style="{StaticResource NeuButtonAccent}"
-                        Click="PrimaryButton_Click" MinWidth="110" Height="42" Margin="4,0"/>
-                <Button x:Name="SecondaryButton" Content="Annuler" Style="{StaticResource NeuButton}"
-                        Click="SecondaryButton_Click" MinWidth="110" Height="42" Margin="4,0"
+            <!-- Boutons -->
+            <StackPanel x:Name="ButtonPanel"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button x:Name="PrimaryButton" Content="OK"
+                        Style="{StaticResource NeuButtonAccent}"
+                        Click="PrimaryButton_Click"
+                        MinWidth="110" Height="40" Margin="4,0"/>
+                <Button x:Name="SecondaryButton" Content="Annuler"
+                        Style="{StaticResource NeuButton}"
+                        Click="SecondaryButton_Click"
+                        MinWidth="110" Height="40" Margin="4,0"
                         Visibility="Collapsed"/>
             </StackPanel>
+
         </StackPanel>
     </Border>
 </Window>

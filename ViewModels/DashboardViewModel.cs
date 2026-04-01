@@ -9,7 +9,7 @@ namespace GroupeV.ViewModels;
 /// ViewModel principal du tableau de bord.
 /// Pattern MVVM strict : aucune dépendance directe vers la Vue.
 /// </summary>
-internal sealed class DashboardViewModel : ViewModelBase
+public sealed class DashboardViewModel : ViewModelBase
 {
     // ========== COLLECTIONS ==========
 
@@ -45,20 +45,6 @@ internal sealed class DashboardViewModel : ViewModelBase
     {
         get => _totalProduits;
         set => SetProperty(ref _totalProduits, value);
-    }
-
-    private int _totalCategories;
-    public int TotalCategories
-    {
-        get => _totalCategories;
-        set => SetProperty(ref _totalCategories, value);
-    }
-
-    private int _totalVendeurs;
-    public int TotalVendeurs
-    {
-        get => _totalVendeurs;
-        set => SetProperty(ref _totalVendeurs, value);
     }
 
     private int _totalStock;
@@ -266,28 +252,34 @@ internal sealed class DashboardViewModel : ViewModelBase
 
             // Statistiques
             TotalProduits = products.Count;
-            TotalCategories = await context.Categories.CountAsync();
-            TotalVendeurs = await context.Vendeurs.CountAsync();
+            int totalCategories = await context.Categories.CountAsync();
+            int totalVendeurs = await context.Vendeurs.CountAsync();
             TotalStock = products.Sum(p => p.Quantity);
 
             // Analytics
             var withPrice = products.Where(p => p.Prix.HasValue).ToList();
             if (withPrice.Count > 0)
             {
-                var most = withPrice.OrderByDescending(p => p.Prix).First();
-                MostExpensiveProduct = most.Description ?? "N/A";
-                MostExpensivePrice = $"{most.Prix:F2} €";
+                var most = withPrice.MaxBy(p => p.Prix);
+                if (most != null)
+                {
+                    MostExpensiveProduct = most.Description ?? "N/A";
+                    MostExpensivePrice = $"{most.Prix:F2} €";
+                }
 
-                var least = withPrice.OrderBy(p => p.Prix).First();
-                LeastExpensiveProduct = least.Description ?? "N/A";
-                LeastExpensivePrice = $"{least.Prix:F2} €";
+                var least = withPrice.MinBy(p => p.Prix);
+                if (least != null)
+                {
+                    LeastExpensiveProduct = least.Description ?? "N/A";
+                    LeastExpensivePrice = $"{least.Prix:F2} €";
+                }
 
                 AveragePrice = $"{withPrice.Average(p => (double)p.Prix!.Value):F2} €";
             }
 
             RecordCount = $"{TotalProduits} produits · {TotalStock} articles en stock";
             StatusMessage = "Système prêt — Toutes les données chargées avec succès";
-            QuickStats = $"Base de données: vente_groupe\nStatut: CONNECTÉ\nServeur: localhost:3306\n\nProduits: {TotalProduits}\nStock total: {TotalStock}\nVendeurs: {TotalVendeurs}\nCatégories: {TotalCategories}";
+            QuickStats = $"Base de données: vente_groupe\nStatut: CONNECTÉ\nServeur: localhost:3306\n\nProduits: {TotalProduits}\nStock total: {TotalStock}\nVendeurs: {totalVendeurs}\nCatégories: {totalCategories}";
 
             if (AuthenticationService.CurrentUser != null)
             {

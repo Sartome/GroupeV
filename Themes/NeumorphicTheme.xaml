@@ -2,127 +2,213 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ═══════════════════════════════════════════════════════════════
-         FLUENT NEUMORPHISM THEME — GroupeV
-         Palette : blanc chaud avec accent indigo vibrant
+         FLAT MODERN THEME — GroupeV
+         Style : Flat / Card pur — Zéro DropShadowEffect statique
+         Palette : Blanc pur + Gris neutres + Accent Indigo doux
          ═══════════════════════════════════════════════════════════════ -->
 
     <!-- ═══ GLOBAL TEXT SHARPNESS ═══
-         AllowsTransparency=True forces software rendering which disables hardware ClearType.
-         TextFormattingMode=Display snaps glyph positions to whole pixels (vs floating-point
-         "Ideal" mode) — the single biggest fix for blurry WPF text. SnapsToDevicePixels
-         prevents sub-pixel border/element positions. Both properties inherit through the
-         visual tree, so setting them here covers the entire application. -->
+         TextFormattingMode=Display snaps glyph positions to whole pixels.
+         SnapsToDevicePixels prevents sub-pixel border positions.
+         NOTE: AllowsTransparency=True a été retiré des fenêtres pour
+         réactiver le rendu hardware et le ClearType natif. -->
     <Style TargetType="TextBlock">
         <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
 
-    <!-- ═══ PALETTE DE COULEURS ═══ -->
-    <Color x:Key="NeuBackground">#F0F2F5</Color>
+    <!-- ═══════════════════════════════════════════════════════════════
+         PALETTE DE COULEURS — FLAT MODERN
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Fonds -->
+    <Color x:Key="NeuBackground">#F9FAFB</Color>
     <Color x:Key="NeuSurface">#FFFFFF</Color>
-    <Color x:Key="NeuLightShadow">#FFFFFF</Color>
-    <Color x:Key="NeuDarkShadow">#C8CDD5</Color>
+    <Color x:Key="NeuInputBg">#F9FAFB</Color>
+    <Color x:Key="NeuSidebarBg">#FFFFFF</Color>
+
+    <!-- Bordures -->
+    <Color x:Key="NeuDivider">#E5E7EB</Color>
+    <Color x:Key="NeuBorderFocus">#6366F1</Color>
+
+    <!-- Accent Indigo -->
     <Color x:Key="NeuAccent">#6366F1</Color>
     <Color x:Key="NeuAccentLight">#818CF8</Color>
     <Color x:Key="NeuAccentDark">#4F46E5</Color>
-    <Color x:Key="NeuTextPrimary">#1E293B</Color>
-    <Color x:Key="NeuTextSecondary">#64748B</Color>
-    <Color x:Key="NeuSuccess">#22C55E</Color>
-    <Color x:Key="NeuDanger">#EF4444</Color>
-    <Color x:Key="NeuWarning">#F59E0B</Color>
-    <Color x:Key="NeuInputBg">#F8FAFC</Color>
-    <Color x:Key="NeuInfo">#3B82F6</Color>
-    <Color x:Key="NeuDivider">#E2E8F0</Color>
+    <Color x:Key="NeuAccentBg">#EEF2FF</Color>
 
-    <SolidColorBrush x:Key="NeuBackgroundBrush"   Color="{StaticResource NeuBackground}"/>
-    <SolidColorBrush x:Key="NeuSurfaceBrush"      Color="{StaticResource NeuSurface}"/>
-    <SolidColorBrush x:Key="NeuAccentBrush"        Color="{StaticResource NeuAccent}"/>
-    <SolidColorBrush x:Key="NeuAccentLightBrush"   Color="{StaticResource NeuAccentLight}"/>
-    <SolidColorBrush x:Key="NeuAccentDarkBrush"    Color="{StaticResource NeuAccentDark}"/>
-    <SolidColorBrush x:Key="NeuTextPrimaryBrush"   Color="{StaticResource NeuTextPrimary}"/>
-    <SolidColorBrush x:Key="NeuTextSecondaryBrush" Color="{StaticResource NeuTextSecondary}"/>
-    <SolidColorBrush x:Key="NeuSuccessBrush"       Color="{StaticResource NeuSuccess}"/>
-    <SolidColorBrush x:Key="NeuDangerBrush"        Color="{StaticResource NeuDanger}"/>
-    <SolidColorBrush x:Key="NeuWarningBrush"       Color="{StaticResource NeuWarning}"/>
-    <SolidColorBrush x:Key="NeuLightShadowBrush"   Color="{StaticResource NeuLightShadow}"/>
-    <SolidColorBrush x:Key="NeuDarkShadowBrush"    Color="{StaticResource NeuDarkShadow}"/>
-    <SolidColorBrush x:Key="NeuInfoBrush"          Color="{StaticResource NeuInfo}"/>
-    <SolidColorBrush x:Key="NeuDividerBrush"       Color="{StaticResource NeuDivider}"/>
-    <SolidColorBrush x:Key="NeuInputBgBrush"       Color="{StaticResource NeuInputBg}"/>
+    <!-- Typographie -->
+    <Color x:Key="NeuTextPrimary">#111827</Color>
+    <Color x:Key="NeuTextSecondary">#6B7280</Color>
+    <Color x:Key="NeuTextTertiary">#9CA3AF</Color>
+    <Color x:Key="NeuTextOnAccent">#FFFFFF</Color>
+
+    <!-- Sémantique — couleurs vives (pour icônes/chiffres uniquement) -->
+    <Color x:Key="NeuSuccess">#16A34A</Color>
+    <Color x:Key="NeuDanger">#DC2626</Color>
+    <Color x:Key="NeuWarning">#D97706</Color>
+    <Color x:Key="NeuInfo">#2563EB</Color>
+
+    <!-- Badges Pastel — fond clair + texte foncé de la même teinte -->
+    <Color x:Key="NeuSuccessBadgeBg">#DCFCE7</Color>
+    <Color x:Key="NeuSuccessBadgeFg">#166534</Color>
+    <Color x:Key="NeuDangerBadgeBg">#FEE2E2</Color>
+    <Color x:Key="NeuDangerBadgeFg">#991B1B</Color>
+    <Color x:Key="NeuWarningBadgeBg">#FEF3C7</Color>
+    <Color x:Key="NeuWarningBadgeFg">#92400E</Color>
+    <Color x:Key="NeuInfoBadgeBg">#DBEAFE</Color>
+    <Color x:Key="NeuInfoBadgeFg">#1E40AF</Color>
+    <Color x:Key="NeuAccentBadgeBg">#EEF2FF</Color>
+    <Color x:Key="NeuAccentBadgeFg">#3730A3</Color>
+    <Color x:Key="NeuNeutralBadgeBg">#F3F4F6</Color>
+    <Color x:Key="NeuNeutralBadgeFg">#374151</Color>
+
+    <!-- Ombres légères (modales uniquement) -->
+    <Color x:Key="NeuDarkShadow">#1F2937</Color>
+    <Color x:Key="NeuLightShadow">#FFFFFF</Color>
+
+    <!-- ═══ BRUSHES ═══ -->
+    <SolidColorBrush x:Key="NeuBackgroundBrush"         Color="{StaticResource NeuBackground}"/>
+    <SolidColorBrush x:Key="NeuSurfaceBrush"            Color="{StaticResource NeuSurface}"/>
+    <SolidColorBrush x:Key="NeuInputBgBrush"            Color="{StaticResource NeuInputBg}"/>
+    <SolidColorBrush x:Key="NeuSidebarBgBrush"          Color="{StaticResource NeuSidebarBg}"/>
+    <SolidColorBrush x:Key="NeuDividerBrush"            Color="{StaticResource NeuDivider}"/>
+    <SolidColorBrush x:Key="NeuAccentBrush"             Color="{StaticResource NeuAccent}"/>
+    <SolidColorBrush x:Key="NeuAccentLightBrush"        Color="{StaticResource NeuAccentLight}"/>
+    <SolidColorBrush x:Key="NeuAccentDarkBrush"         Color="{StaticResource NeuAccentDark}"/>
+    <SolidColorBrush x:Key="NeuAccentBgBrush"           Color="{StaticResource NeuAccentBg}"/>
+    <SolidColorBrush x:Key="NeuTextPrimaryBrush"        Color="{StaticResource NeuTextPrimary}"/>
+    <SolidColorBrush x:Key="NeuTextSecondaryBrush"      Color="{StaticResource NeuTextSecondary}"/>
+    <SolidColorBrush x:Key="NeuTextTertiaryBrush"       Color="{StaticResource NeuTextTertiary}"/>
+    <SolidColorBrush x:Key="NeuSuccessBrush"            Color="{StaticResource NeuSuccess}"/>
+    <SolidColorBrush x:Key="NeuDangerBrush"             Color="{StaticResource NeuDanger}"/>
+    <SolidColorBrush x:Key="NeuWarningBrush"            Color="{StaticResource NeuWarning}"/>
+    <SolidColorBrush x:Key="NeuInfoBrush"               Color="{StaticResource NeuInfo}"/>
+    <SolidColorBrush x:Key="NeuDarkShadowBrush"         Color="{StaticResource NeuDarkShadow}"/>
+    <SolidColorBrush x:Key="NeuLightShadowBrush"        Color="{StaticResource NeuLightShadow}"/>
+
+    <!-- Brushes Badges Pastel -->
+    <SolidColorBrush x:Key="NeuSuccessBadgeBgBrush"     Color="{StaticResource NeuSuccessBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuSuccessBadgeFgBrush"     Color="{StaticResource NeuSuccessBadgeFg}"/>
+    <SolidColorBrush x:Key="NeuDangerBadgeBgBrush"      Color="{StaticResource NeuDangerBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuDangerBadgeFgBrush"      Color="{StaticResource NeuDangerBadgeFg}"/>
+    <SolidColorBrush x:Key="NeuWarningBadgeBgBrush"     Color="{StaticResource NeuWarningBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuWarningBadgeFgBrush"     Color="{StaticResource NeuWarningBadgeFg}"/>
+    <SolidColorBrush x:Key="NeuInfoBadgeBgBrush"        Color="{StaticResource NeuInfoBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuInfoBadgeFgBrush"        Color="{StaticResource NeuInfoBadgeFg}"/>
+    <SolidColorBrush x:Key="NeuAccentBadgeBgBrush"      Color="{StaticResource NeuAccentBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuAccentBadgeFgBrush"      Color="{StaticResource NeuAccentBadgeFg}"/>
+    <SolidColorBrush x:Key="NeuNeutralBadgeBgBrush"     Color="{StaticResource NeuNeutralBadgeBg}"/>
+    <SolidColorBrush x:Key="NeuNeutralBadgeFgBrush"     Color="{StaticResource NeuNeutralBadgeFg}"/>
 
     <!-- ═══ TYPOGRAPHIE ═══ -->
     <FontFamily x:Key="NeuFontFamily">Segoe UI, Arial</FontFamily>
     <FontFamily x:Key="NeuMonoFont">Cascadia Code, Consolas</FontFamily>
 
-    <!-- ═══ STYLE CARTE NEUMORPHIQUE (CONVEXE) ═══ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         COMPOSANTS DE BASE
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- ═══ CARTE PRINCIPALE (Flat) ═══
+         Fond blanc, bordure fine 1px, coins arrondis 8px.
+         Aucune ombre — la profondeur est donnée par le contraste fond/carte. -->
     <Style x:Key="NeuCard" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
-        <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="Padding" Value="24"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="16" ShadowDepth="4"
-                                  Direction="315" Opacity="0.18"/>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Background"       Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius"     Value="8"/>
+        <Setter Property="Padding"          Value="24"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="BorderBrush"      Value="{StaticResource NeuDividerBrush}"/>
     </Style>
 
-    <!-- Carte concave (enfoncée) -->
+    <!-- Carte inset (champ de saisie, zone de code, zone concave) -->
     <Style x:Key="NeuCardInset" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="16"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Background"       Value="{StaticResource NeuInputBgBrush}"/>
+        <Setter Property="CornerRadius"     Value="6"/>
+        <Setter Property="Padding"          Value="16"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="BorderBrush"      Value="{StaticResource NeuDividerBrush}"/>
     </Style>
 
-    <!-- ═══ BOUTON NEUMORPHIQUE ═══ -->
+    <!-- ═══ STAT CARD (cartes métriques du dashboard) ═══
+         Fond blanc, bordure fine, CornerRadius=8. -->
+    <Style x:Key="NeuStatCard" TargetType="Border">
+        <Setter Property="Background"       Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius"     Value="8"/>
+        <Setter Property="Padding"          Value="20,16"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="BorderBrush"      Value="{StaticResource NeuDividerBrush}"/>
+    </Style>
+
+    <!-- ═══ BOUTON FLAT (neutre) ═══ -->
     <Style x:Key="NeuButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Padding" Value="18,10"/>
-        <Setter Property="Margin" Value="0,3"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background"                Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground"                Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily"                Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"                  Value="13"/>
+        <Setter Property="FontWeight"                Value="Normal"/>
+        <Setter Property="Padding"                   Value="16,9"/>
+        <Setter Property="Margin"                    Value="0,2"/>
+        <Setter Property="BorderThickness"           Value="0"/>
+        <Setter Property="Cursor"                    Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bd" 
-                            Background="{TemplateBinding Background}" 
-                            CornerRadius="10" 
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
                             Padding="{TemplateBinding Padding}"
-                            BorderThickness="1" BorderBrush="{StaticResource NeuDividerBrush}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource NeuDividerBrush}"
                             SnapsToDevicePixels="True">
-                        <Border.Effect>
-                            <DropShadowEffect x:Name="BdShadow" Color="{StaticResource NeuDarkShadow}" 
-                                              BlurRadius="8" ShadowDepth="2" Direction="315" Opacity="0.12"/>
-                        </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentLightBrush}"/>
-                            <Setter TargetName="Bd" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
-                                                      BlurRadius="12" ShadowDepth="2" Direction="315" Opacity="0.15"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter TargetName="Bd" Property="Background"   Value="{StaticResource NeuInputBgBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"  Value="{StaticResource NeuAccentLightBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuDividerBrush}"/>
-                            <Setter TargetName="Bd" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="{StaticResource NeuDarkShadow}" 
-                                                      BlurRadius="2" ShadowDepth="0" Direction="135" Opacity="0.2"/>
-                                </Setter.Value>
+                            <Setter TargetName="Bd" Property="Background"   Value="{StaticResource NeuAccentBgBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"  Value="{StaticResource NeuAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Bouton accent (primaire — fond indigo plein) -->
+    <Style x:Key="NeuButtonAccent" TargetType="Button">
+        <Setter Property="Background"   Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="Foreground"   Value="White"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="13"/>
+        <Setter Property="FontWeight"   Value="SemiBold"/>
+        <Setter Property="Padding"      Value="16,9"/>
+        <Setter Property="Margin"       Value="0,2"/>
+        <Setter Property="Cursor"       Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="0"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuAccentDarkBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value><SolidColorBrush Color="#3730A3"/></Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -134,76 +220,202 @@
         </Setter>
     </Style>
 
-    <!-- Bouton accent (primaire) -->
-    <Style x:Key="NeuButtonAccent" TargetType="Button" BasedOn="{StaticResource NeuButton}">
-        <Setter Property="Background">
+    <!-- Bouton danger (fond rouge pastel, texte rouge foncé → rouge plein au hover) -->
+    <Style x:Key="NeuButtonDanger" TargetType="Button">
+        <Setter Property="Background"   Value="{StaticResource NeuDangerBadgeBgBrush}"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuDangerBadgeFgBrush}"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="13"/>
+        <Setter Property="FontWeight"   Value="Normal"/>
+        <Setter Property="Padding"      Value="16,9"/>
+        <Setter Property="Margin"       Value="0,2"/>
+        <Setter Property="Cursor"       Value="Hand"/>
+        <Setter Property="Template">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource NeuAccentLight}" Offset="0"/>
-                    <GradientStop Color="{StaticResource NeuAccent}" Offset="1"/>
-                </LinearGradientBrush>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource NeuDangerBadgeBgBrush}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"  Value="{StaticResource NeuDangerBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuDangerBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value><SolidColorBrush Color="#B91C1C"/></Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground" Value="White"/>
     </Style>
 
-    <!-- Bouton danger -->
-    <Style x:Key="NeuButtonDanger" TargetType="Button" BasedOn="{StaticResource NeuButton}">
-        <Setter Property="Background">
+    <!-- Bouton succès (fond vert pastel, texte vert foncé → vert plein au hover) -->
+    <Style x:Key="NeuButtonSuccess" TargetType="Button">
+        <Setter Property="Background"   Value="{StaticResource NeuSuccessBadgeBgBrush}"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuSuccessBadgeFgBrush}"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="13"/>
+        <Setter Property="FontWeight"   Value="Normal"/>
+        <Setter Property="Padding"      Value="16,9"/>
+        <Setter Property="Margin"       Value="0,2"/>
+        <Setter Property="Cursor"       Value="Hand"/>
+        <Setter Property="Template">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#FCA5A5" Offset="0"/>
-                    <GradientStop Color="{StaticResource NeuDanger}" Offset="1"/>
-                </LinearGradientBrush>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource NeuSuccessBadgeBgBrush}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"  Value="{StaticResource NeuSuccessBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuSuccessBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground" Value="White"/>
     </Style>
 
-    <!-- Bouton succès -->
-    <Style x:Key="NeuButtonSuccess" TargetType="Button" BasedOn="{StaticResource NeuButton}">
-        <Setter Property="Background">
+    <!-- Bouton Ghost (transparent, juste texte + hover léger) -->
+    <Style x:Key="NeuButtonGhost" TargetType="Button">
+        <Setter Property="Background"   Value="Transparent"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuTextSecondaryBrush}"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="13"/>
+        <Setter Property="Padding"      Value="16,9"/>
+        <Setter Property="Margin"       Value="0,2"/>
+        <Setter Property="Cursor"       Value="Hand"/>
+        <Setter Property="Template">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#86EFAC" Offset="0"/>
-                    <GradientStop Color="{StaticResource NeuSuccess}" Offset="1"/>
-                </LinearGradientBrush>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="0"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuDividerBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground" Value="White"/>
     </Style>
 
-    <!-- ═══ TEXTBOX NEUMORPHIQUE ═══ -->
+    <!-- Bouton Sidebar (pleine largeur, aligné à gauche, hover accent léger) -->
+    <Style x:Key="NeuButtonSidebar" TargetType="Button">
+        <Setter Property="Background"                Value="Transparent"/>
+        <Setter Property="Foreground"                Value="{StaticResource NeuTextSecondaryBrush}"/>
+        <Setter Property="FontFamily"                Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"                  Value="13"/>
+        <Setter Property="FontWeight"                Value="Normal"/>
+        <Setter Property="Padding"                   Value="10,9"/>
+        <Setter Property="Margin"                    Value="0,1"/>
+        <Setter Property="BorderThickness"           Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Cursor"                    Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuAccentBgBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource NeuAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Bouton Sidebar Actif (état sélectionné — fond accent léger, texte accent) -->
+    <Style x:Key="NeuButtonSidebarActive" TargetType="Button" BasedOn="{StaticResource NeuButtonSidebar}">
+        <Setter Property="Background"   Value="{StaticResource NeuAccentBgBrush}"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="FontWeight"   Value="SemiBold"/>
+    </Style>
+
+    <!-- ═══ TEXTBOX FLAT ═══ -->
     <Style x:Key="NeuTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CaretBrush" Value="{StaticResource NeuAccentBrush}"/>
-        <Setter Property="SelectionBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+        <Setter Property="Background"       Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground"       Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily"       Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"         Value="13"/>
+        <Setter Property="Padding"          Value="12,9"/>
+        <Setter Property="BorderThickness"  Value="0"/>
+        <Setter Property="CaretBrush"       Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="SelectionBrush"   Value="{StaticResource NeuAccentLightBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
-                    <Border x:Name="Bd" 
-                            Background="{TemplateBinding Background}" 
-                            CornerRadius="10" 
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
                             Padding="{TemplateBinding Padding}"
-                            BorderThickness="1" BorderBrush="{StaticResource NeuDividerBrush}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource NeuDividerBrush}"
                             SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost" Focusable="False"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+                        </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"    Value="{StaticResource NeuAccentBrush}"/>
                             <Setter TargetName="Bd" Property="BorderThickness" Value="1.5"/>
-                            <Setter TargetName="Bd" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
-                                                      BlurRadius="8" ShadowDepth="0" Opacity="0.15"/>
-                                </Setter.Value>
-                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
+                            <Setter Property="Opacity" Value="0.6"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -211,37 +423,35 @@
         </Setter>
     </Style>
 
-    <!-- ═══ PASSWORDBOX NEUMORPHIQUE ═══ -->
+    <!-- ═══ PASSWORDBOX FLAT ═══ -->
     <Style x:Key="NeuPasswordBox" TargetType="PasswordBox">
-        <Setter Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CaretBrush" Value="{StaticResource NeuAccentBrush}"/>
-        <Setter Property="SelectionBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+        <Setter Property="Background"       Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground"       Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily"       Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"         Value="13"/>
+        <Setter Property="Padding"          Value="12,9"/>
+        <Setter Property="BorderThickness"  Value="0"/>
+        <Setter Property="CaretBrush"       Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="SelectionBrush"   Value="{StaticResource NeuAccentLightBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="PasswordBox">
-                    <Border x:Name="Bd" 
-                            Background="{TemplateBinding Background}" 
-                            CornerRadius="10" 
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
                             Padding="{TemplateBinding Padding}"
-                            BorderThickness="1" BorderBrush="{StaticResource NeuDividerBrush}"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource NeuDividerBrush}"
                             SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost" Focusable="False"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentLightBrush}"/>
+                        </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"    Value="{StaticResource NeuAccentBrush}"/>
                             <Setter TargetName="Bd" Property="BorderThickness" Value="1.5"/>
-                            <Setter TargetName="Bd" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="{StaticResource NeuAccent}" 
-                                                      BlurRadius="8" ShadowDepth="0" Opacity="0.15"/>
-                                </Setter.Value>
-                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -249,47 +459,65 @@
         </Setter>
     </Style>
 
-    <!-- ═══ DATAGRID NEUMORPHIQUE ═══ -->
+    <!-- ═══ DATAGRID FLAT ═══
+         Lignes verticales supprimées. Seules les lignes horizontales légères subsistent.
+         Header sobre, pas d'alternance de couleur de ligne. -->
     <Style x:Key="NeuDataGrid" TargetType="DataGrid">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="GridLinesVisibility" Value="None"/>
-        <Setter Property="HeadersVisibility" Value="Column"/>
-        <Setter Property="RowBackground" Value="Transparent"/>
-        <Setter Property="AlternatingRowBackground" Value="{StaticResource NeuInputBgBrush}"/>
-        <Setter Property="AutoGenerateColumns" Value="False"/>
-        <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="CanUserAddRows" Value="False"/>
-        <Setter Property="SelectionMode" Value="Single"/>
-        <Setter Property="RowHeight" Value="48"/>
-        <Setter Property="EnableRowVirtualization" Value="True"/>
+        <Setter Property="Background"                Value="Transparent"/>
+        <Setter Property="Foreground"               Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily"               Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"                 Value="13"/>
+        <Setter Property="BorderThickness"          Value="0"/>
+        <Setter Property="GridLinesVisibility"      Value="Horizontal"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="VerticalGridLinesBrush"   Value="Transparent"/>
+        <Setter Property="HeadersVisibility"        Value="Column"/>
+        <Setter Property="RowBackground"            Value="Transparent"/>
+        <Setter Property="AlternatingRowBackground" Value="Transparent"/>
+        <Setter Property="AutoGenerateColumns"      Value="False"/>
+        <Setter Property="IsReadOnly"               Value="True"/>
+        <Setter Property="CanUserAddRows"           Value="False"/>
+        <Setter Property="SelectionMode"            Value="Single"/>
+        <Setter Property="RowHeight"                Value="46"/>
+        <Setter Property="EnableRowVirtualization"  Value="True"/>
         <Setter Property="EnableColumnVirtualization" Value="True"/>
-        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+        <Setter Property="VirtualizingPanel.IsVirtualizing"     Value="True"/>
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
-        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="ScrollViewer.CanContentScroll"        Value="True"/>
     </Style>
 
+    <!-- En-tête de colonne DataGrid — sobre, texte secondaire, bordure basse uniquement -->
     <Style x:Key="NeuDataGridColumnHeader" TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextSecondaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontSize" Value="11"/>
-        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="Background"   Value="Transparent"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuTextSecondaryBrush}"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontWeight"   Value="SemiBold"/>
+        <Setter Property="FontSize"     Value="11"/>
+        <Setter Property="Padding"      Value="12,10"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="BorderBrush"  Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
+    <!-- Cellule DataGrid — pas de bordure, padding confortable -->
     <Style x:Key="NeuDataGridCell" TargetType="DataGridCell">
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Padding"         Value="12,0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
-                    <Border Background="{TemplateBinding Background}" 
+                    <Border Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter VerticalAlignment="Center"/>
                     </Border>
@@ -298,129 +526,115 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.1"/>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Foreground" Value="{StaticResource NeuAccentDarkBrush}"/>
+                <Setter Property="Background"      Value="{StaticResource NeuAccentBgBrush}"/>
+                <Setter Property="Foreground"      Value="{StaticResource NeuAccentDarkBrush}"/>
+                <Setter Property="BorderThickness" Value="0"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Ligne DataGrid — hover très léger, sélection accent pastel -->
     <Style x:Key="NeuDataGridRow" TargetType="DataGridRow">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Margin" Value="0,1"/>
+        <Setter Property="Margin"     Value="0"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.05"/>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{StaticResource NeuAccent}" Opacity="0.08"/>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource NeuAccentBgBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <!-- ═══ COMBOBOX NEUMORPHIQUE ═══ -->
+    <!-- ═══ COMBOBOX FLAT ═══ -->
     <Style x:Key="NeuComboBox" TargetType="ComboBox">
-        <Setter Property="Background" Value="{StaticResource NeuInputBgBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Background"       Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="Foreground"       Value="{StaticResource NeuTextPrimaryBrush}"/>
+        <Setter Property="FontFamily"       Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"         Value="13"/>
+        <Setter Property="Padding"          Value="12,9"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="BorderBrush"      Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Height"           Value="38"/>
     </Style>
 
-    <!-- ═══ SCROLLBAR NEUMORPHIQUE ═══ -->
+    <!-- ═══ SCROLLVIEWER ═══ -->
     <Style x:Key="NeuScrollViewer" TargetType="ScrollViewer">
-        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
     </Style>
 
-    <!-- ═══ STAT CARD (pour le dashboard) ═══ -->
-    <Style x:Key="NeuStatCard" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
-        <Setter Property="CornerRadius" Value="14"/>
-        <Setter Property="Padding" Value="20,16"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="10" ShadowDepth="2"
-                                  Direction="315" Opacity="0.12"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- ═══ TOAST NOTIFICATION ═══ -->
+    <!-- ═══ TOAST NOTIFICATION ═══
+         Fond blanc, bordure fine. Ombre légère autorisée sur les éléments flottants. -->
     <Style x:Key="NeuToast" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource NeuSurfaceBrush}"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="ClipToBounds" Value="True"/>
-        <Setter Property="HorizontalAlignment" Value="Right"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="Margin" Value="0,16,16,0"/>
-        <Setter Property="MaxWidth" Value="400"/>
-        <Setter Property="MinWidth" Value="260"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Background"           Value="{StaticResource NeuSurfaceBrush}"/>
+        <Setter Property="CornerRadius"         Value="8"/>
+        <Setter Property="Padding"              Value="0"/>
+        <Setter Property="ClipToBounds"         Value="True"/>
+        <Setter Property="HorizontalAlignment"  Value="Right"/>
+        <Setter Property="VerticalAlignment"    Value="Top"/>
+        <Setter Property="Margin"               Value="0,16,16,0"/>
+        <Setter Property="MaxWidth"             Value="380"/>
+        <Setter Property="MinWidth"             Value="260"/>
+        <Setter Property="BorderThickness"      Value="1"/>
+        <Setter Property="BorderBrush"          Value="{StaticResource NeuDividerBrush}"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="{StaticResource NeuDarkShadow}" BlurRadius="20" ShadowDepth="6"
-                                  Direction="315" Opacity="0.2"/>
+                <DropShadowEffect Color="{StaticResource NeuDarkShadow}"
+                                  BlurRadius="16" ShadowDepth="4"
+                                  Direction="270" Opacity="0.10"/>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!-- ═══ PROGRESSBAR NEUMORPHIQUE (indéterminé) ═══ -->
+    <!-- ═══ PROGRESSBAR FLAT ═══ -->
     <Style x:Key="NeuProgressBarIndeterminate" TargetType="ProgressBar">
-        <Setter Property="Height" Value="4"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Background" Value="{StaticResource NeuDividerBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="Height"           Value="3"/>
+        <Setter Property="BorderThickness"  Value="0"/>
+        <Setter Property="Background"       Value="{StaticResource NeuDividerBrush}"/>
+        <Setter Property="Foreground"       Value="{StaticResource NeuAccentBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="2" Height="{TemplateBinding Height}">
+                        <Border x:Name="PART_Indicator"
+                                Background="{TemplateBinding Foreground}"
+                                CornerRadius="2"
+                                HorizontalAlignment="Left"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-    <!-- ═══ CONVERTERS ═══ -->
-    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-
-    <!-- ═══ CHECKBOX NEUMORPHIQUE ═══ -->
+    <!-- ═══ CHECKBOX FLAT ═══ -->
     <Style x:Key="NeuCheckBox" TargetType="CheckBox">
-        <Setter Property="FontFamily" Value="{StaticResource NeuFontFamily}"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="{StaticResource NeuTextSecondaryBrush}"/>
-        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="13"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuTextSecondaryBrush}"/>
+        <Setter Property="Cursor"       Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border x:Name="CheckBd" Width="20" Height="20" CornerRadius="6"
-                                Background="{StaticResource NeuInputBgBrush}"
-                                BorderThickness="1.5" BorderBrush="{StaticResource NeuDividerBrush}"
+                        <Border x:Name="CheckBd" Width="18" Height="18" CornerRadius="4"
+                                Background="{StaticResource NeuSurfaceBrush}"
+                                BorderThickness="1.5"
+                                BorderBrush="{StaticResource NeuDividerBrush}"
                                 SnapsToDevicePixels="True">
-                            <Border.Effect>
-                                <DropShadowEffect Color="{StaticResource NeuDarkShadow}"
-                                                  BlurRadius="4" ShadowDepth="1" Opacity="0.12"/>
-                            </Border.Effect>
-                            <TextBlock x:Name="CheckMark" Text="✓" FontSize="11" FontWeight="Bold"
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            <TextBlock x:Name="CheckMark" Text="✓" FontSize="10" FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Visibility="Collapsed"/>
                         </Border>
                         <ContentPresenter VerticalAlignment="Center" Margin="8,0,0,0"/>
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="CheckBd" Property="Background" Value="{StaticResource NeuAccentBrush}"/>
-                            <Setter TargetName="CheckBd" Property="BorderBrush" Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="CheckBd" Property="Background"   Value="{StaticResource NeuAccentBrush}"/>
+                            <Setter TargetName="CheckBd" Property="BorderBrush"  Value="{StaticResource NeuAccentBrush}"/>
                             <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -431,5 +645,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- ═══ LABEL DE SECTION SIDEBAR ═══ -->
+    <Style x:Key="NeuSidebarSectionLabel" TargetType="TextBlock">
+        <Setter Property="FontFamily"   Value="{StaticResource NeuFontFamily}"/>
+        <Setter Property="FontSize"     Value="10"/>
+        <Setter Property="FontWeight"   Value="SemiBold"/>
+        <Setter Property="Foreground"   Value="{StaticResource NeuTextTertiaryBrush}"/>
+        <Setter Property="Margin"       Value="10,8,0,4"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+    </Style>
+
+    <!-- ═══ CONVERTERS ═══ -->
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
 </ResourceDictionary>
